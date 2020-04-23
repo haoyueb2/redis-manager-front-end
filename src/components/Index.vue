@@ -24,32 +24,7 @@
           <el-button size="mini" type="text" @click="importVisible = true">Import Cluster</el-button>
         </div>
 
-        <div class="links" id="links">
-          <el-divider direction="vertical"></el-divider>
-          <el-link
-            :underline="false"
-            href="https://github.com/ngbdf/redis-manager/"
-            target="_blank"
-          >
-            <i class="el-icon-ali-git link-icon" title="Github"></i>
-          </el-link>
-          <el-divider direction="vertical"></el-divider>
-          <el-link
-            :underline="false"
-            href="https://github.com/ngbdf/redis-manager/wiki"
-            target="_blank"
-          >
-            <i class="el-icon-tickets link-icon" title="Document"></i>
-          </el-link>
-          <el-divider direction="vertical"></el-divider>
-          <el-link
-            :underline="false"
-            href="https://github.com/ngbdf/redis-manager/issues/new"
-            target="_blank"
-          >
-            <i class="el-icon-ali-feedback link-icon" title="Feedback"></i>
-          </el-link>
-        </div>
+
         <div class="user-info">
           <!-- <span class="user-name">Redis</span> -->
           <el-dropdown @command="handleCommand" class="user-dropdown">
@@ -198,20 +173,25 @@ export default {
     };
   },
   methods: {
+    // signOut() {
+    //   let url = "/user/signOut";
+    //   API.post(
+    //     url,
+    //     null,
+    //     response => {
+    //       this.$router.push({
+    //         name: "login"
+    //       });
+    //     },
+    //     err => {
+    //       message.error(err);
+    //     }
+    //   );
+    // },
     signOut() {
-      let url = "/user/signOut";
-      API.post(
-        url,
-        null,
-        response => {
-          this.$router.push({
-            name: "login"
-          });
-        },
-        err => {
-          message.error(err);
-        }
-      );
+      this.$router.push({
+        name: "login",
+      });
     },
     toDashboard() {
       this.$router.push({
@@ -535,7 +515,7 @@ export default {
 }
 
 .main {
-  background-color: #f0f2f5;
+  background-color: #89da99;
 }
 
 .is-collapse {

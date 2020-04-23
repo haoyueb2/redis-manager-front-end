@@ -215,12 +215,12 @@
           </div>
         </div>
       </el-col>
-      <el-col :xl="12" :lg="12" :md="24" :sm="24">
+      <!-- <el-col :xl="12" :lg="12" :md="24" :sm="24">
         <div class="console-wrapper">
           <div class="console-title">Redis Installation Console</div>
           <pre class="console">{{ installationConsole }}</pre>
         </div>
-      </el-col>
+      </el-col> -->
     </el-row>
     <!-- <el-dialog title="Installation Params" :visible.sync="installationInfoVisible" width="50%">
       <div class="item-param">
@@ -426,7 +426,7 @@ export default {
         installationEnvironment: 0
       },
       installationInfoVisible: false,
-      installationConsole: "Prepare to install redis...",
+      // installationConsole: "Prepare to install redis...",
       websocketURI: "",
       rules: {
         clusterName: [
@@ -734,8 +734,8 @@ export default {
         } else if (message.indexOf("Start saving to database") > -1) {
           this.step = 5;
         }
-        this.installationConsole += " \n ";
-        this.installationConsole += message;
+        // this.installationConsole += " \n ";
+        // this.installationConsole += message;
       }
     },
     websocketsend(data) {
@@ -862,7 +862,7 @@ export default {
   color: #909399;
 }
 
-.console-wrapper {
+/* .console-wrapper {
   margin-left: 10px;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
@@ -885,7 +885,7 @@ export default {
   padding: 10px 20px;
   border-bottom: 1px solid #dcdfe6;
   background: #f0f2f5;
-}
+} */
 
 .item-param {
   padding: 5px;

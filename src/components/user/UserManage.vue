@@ -392,6 +392,7 @@ export default {
       );
     },
     saveUser(user) {
+      console.log(this.user);
       this.$refs[user].validate(valid => {
         if (valid) {
           this.saveUserLoading = true;

@@ -1,6 +1,6 @@
 <template>
   <div v-loading="clusterListLoading">
-    <el-row :gutter="20" class="card-panel-group">
+    <!-- <el-row :gutter="20" class="card-panel-group">
       <el-col :xl="6" :lg="6" :md="12" :sm="12">
         <div class="card-panel">
           <div class="card-panel-icon-wrapper card-panel-icon-user">
@@ -48,7 +48,7 @@
           </div>
         </div>
       </el-col>
-    </el-row>
+    </el-row>-->
     <el-row :gutter="20">
       <el-col
         :xs="24"
@@ -133,55 +133,18 @@
           <div class="card-bottom">
             <el-button
               size="mini"
-              title="Query"
-              icon="el-icon-search"
-              circle
-              @click="handleQuery(cluster)"
-              :disabled="cluster.redisMode == 'sentinel'"
-            ></el-button>
-            <el-button
-              size="mini"
               title="Monitor"
               type="primary"
-              icon="el-icon-view"
-              circle
               @click="toMonitor(cluster.clusterId)"
-            ></el-button>
-            <el-button
-              size="mini"
-              title="Alert"
-              type="warning"
-              icon="el-icon-bell"
-              circle
-              @click="toAlertManage(cluster.clusterId)"
-              v-if="currentUser.userRole < 2"
-            ></el-button>
+            >Monitor</el-button>
 
             <el-button
               size="mini"
               title="Manage"
-              type="danger"
-              icon="el-icon-setting"
-              circle
+              type="success"
               @click="toManage(cluster.clusterId)"
               v-if="currentUser.userRole < 2"
-            ></el-button>
-
-            <el-dropdown trigger="click" class="more-operation" v-if="currentUser.userRole < 2">
-              <el-button size="mini" title="Edit or delete" type="info" icon="el-icon-more" circle></el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  icon="el-icon-edit-outline"
-                  class="edit"
-                  @click.native="editCluster(cluster.clusterId)"
-                >Edit</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-delete"
-                  class="delete"
-                  @click.native="showDeleteCluster(cluster.clusterId)"
-                >Delete</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            >Manage</el-button>
           </div>
         </el-card>
       </el-col>
@@ -230,12 +193,12 @@ export default {
   },
   data() {
     return {
-      overview: {
-        userNumber: 0,
-        healthNumber: 0,
-        badNumber: 0,
-        alertNumber: 0
-      },
+      // overview: {
+      //   // userNumber: 0,
+      //   healthNumber: 0,
+      //   badNumber: 0,
+      //   alertNumber: 0
+      // },
       clusterList: [],
       cluster: {},
       queryVisible: false,
@@ -273,28 +236,28 @@ export default {
       this.cluster = cluster;
       this.queryVisible = true;
     },
-    getOverview(groupId) {
-      let url = "/group/overview/" + groupId;
-      if (!isEmpty(groupId)) {
-        API.get(
-          url,
-          null,
-          response => {
-            let result = response.data;
-            if (result.code == 0) {
-              let overview = result.data;
-              this.overview.alertNumber = overview.alertNumber;
-              this.overview.userNumber = overview.userNumber;
-            } else {
-              message.error("Get group overview failed");
-            }
-          },
-          err => {
-            message.error(err);
-          }
-        );
-      }
-    },
+    // getOverview(groupId) {
+    //   let url = "/group/overview/" + groupId;
+    //   if (!isEmpty(groupId)) {
+    //     API.get(
+    //       url,
+    //       null,
+    //       response => {
+    //         let result = response.data;
+    //         if (result.code == 0) {
+    //           let overview = result.data;
+    //           this.overview.alertNumber = overview.alertNumber;
+    //           this.overview.userNumber = overview.userNumber;
+    //         } else {
+    //           message.error("Get group overview failed");
+    //         }
+    //       },
+    //       err => {
+    //         message.error(err);
+    //       }
+    //     );
+    //   }
+    // },
     getClusterList(groupId) {
       let url = "/cluster/getClusterList/" + groupId;
       this.clusterListLoading = true;
@@ -315,8 +278,8 @@ export default {
                   badNumber++;
                 }
               });
-              this.overview.healthNumber = healthNumber;
-              this.overview.badNumber = badNumber;
+              // this.overview.healthNumber = healthNumber;
+              // this.overview.badNumber = badNumber;
               this.clusterList = clusterList;
             } else {
               message.error("Get cluster list failed");
@@ -382,7 +345,7 @@ export default {
   watch: {
     currentGroupId(groupId) {
       this.getClusterList(groupId);
-      this.getOverview(groupId);
+      // this.getOverview(groupId);
       this.$router.push({
         name: "dashboard",
         params: { groupId: groupId }
@@ -392,14 +355,14 @@ export default {
   mounted() {
     let groupId = this.currentGroupId;
     this.getClusterList(groupId);
-    this.getOverview(groupId);
+    // this.getOverview(groupId);
     this.userRole = store.getters.getUserRole;
   }
 };
 </script>
 
 <style scoped>
-.card-panel-group {
+/* .card-panel-group {
   margin-bottom: 0px !important;
 }
 .card-panel {
@@ -422,7 +385,7 @@ export default {
   align-items: center;
   cursor: pointer;
   border-radius: 4px;
-  /* 背景色变化动画 */
+  
   transition: all 0.38s ease-out;
 }
 
@@ -478,7 +441,7 @@ export default {
   color: #666;
   padding: 4px 0;
   font-size: 20px;
-}
+} */
 
 /* cluster card */
 .text {

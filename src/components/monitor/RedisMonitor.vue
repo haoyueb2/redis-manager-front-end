@@ -287,31 +287,31 @@
 </template>
 
 <script>
-var elementResizeDetectorMaker = require("element-resize-detector");
+// legend组件
+import 'echarts/lib/component/legendScroll'
+import query from '@/components/tool/Query'
+import sentinelMasterInfo from '@/components/view/SentinelMasterInfo'
+import echartsItem from '@/components/monitor/EchartsItem'
+import API from '@/api/api.js'
+import { formatTime, formatTimeForChart } from '@/utils/time.js'
+import { isEmpty } from '@/utils/validate.js'
+import { store } from '@/vuex/store.js'
+import { getClusterById } from '@/components/cluster/cluster.js'
+import message from '@/utils/message.js'; var elementResizeDetectorMaker = require('element-resize-detector')
 // vue文件中引入echarts工具
-var echarts = require("echarts/lib/echarts");
-require("echarts/lib/chart/line");
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
 // 以下的组件按需引入
-require("echarts/lib/component/tooltip"); // tooltip组件
-require("echarts/lib/component/title"); //  title组件
-require("echarts/lib/component/legend"); // legend组件
-import "echarts/lib/component/legendScroll";
-import query from "@/components/tool/Query";
-import sentinelMasterInfo from "@/components/view/SentinelMasterInfo";
-import echartsItem from "@/components/monitor/EchartsItem";
-import API from "@/api/api.js";
-import { formatTime, formatTimeForChart } from "@/utils/time.js";
-import { isEmpty } from "@/utils/validate.js";
-import { store } from "@/vuex/store.js";
-import { getClusterById } from "@/components/cluster/cluster.js";
-import message from "@/utils/message.js";
+require('echarts/lib/component/tooltip') // tooltip组件
+require('echarts/lib/component/title') //  title组件
+require('echarts/lib/component/legend')
 export default {
   components: {
     query,
     echartsItem,
     sentinelMasterInfo
   },
-  data() {
+  data () {
     return {
       queryVisible: false,
       cluster: {},
@@ -320,154 +320,154 @@ export default {
       timeTypeList: [
         {
           value: 0,
-          label: "Minute"
+          label: 'Minute'
         },
         {
           value: 1,
-          label: "Hour"
+          label: 'Hour'
         }
       ],
       pickerOptions: {
         shortcuts: [
           {
-            text: "Last 15 Min",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 900 * 1000);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 15 Min',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 900 * 1000)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 30 Min",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 1800 * 1000);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 30 Min',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 1800 * 1000)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 1 Hour",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 1 Hour',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 3 Hours",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 3);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 3 Hours',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 3)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 6 Hours",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 6);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 6 Hours',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 6)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 12 Hours",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 12);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 12 Hours',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 12)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 1 Day",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 1 Day',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 2 Days",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 2);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 2 Days',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 2)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 3 Days",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 3);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 3 Days',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 3)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last Week",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
+            text: 'Last Week',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last Mooth",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
+            text: 'Last Mooth',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
             }
           }
         ]
       },
       infoItemList: [
-        "used_memory",
-        "used_memory_rss",
-        "used_memory_overhead",
-        "used_memory_dataset",
-        "mem_fragmentation_ratio",
-        "connections_received",
-        "rejected_connections",
-        "connected_clients",
-        "blocked_clients",
-        "commands_processed",
-        "instantaneous_ops_per_sec",
-        "sync_full",
-        "sync_partial_ok",
-        "sync_partial_err",
-        "keyspace_hits_ratio",
-        "keys",
-        "expires",
-        "cpu_sys",
-        "cpu_user"
+        'used_memory',
+        'used_memory_rss',
+        'used_memory_overhead',
+        'used_memory_dataset',
+        'mem_fragmentation_ratio',
+        'connections_received',
+        'rejected_connections',
+        'connected_clients',
+        'blocked_clients',
+        'commands_processed',
+        'instantaneous_ops_per_sec',
+        'sync_full',
+        'sync_partial_ok',
+        'sync_partial_err',
+        'keyspace_hits_ratio',
+        'keys',
+        'expires',
+        'cpu_sys',
+        'cpu_user'
       ],
       selectedInfoItemList: [
-        "used_memory",
-        "used_memory_rss",
-        "mem_fragmentation_ratio",
-        "connected_clients",
-        "commands_processed",
-        "instantaneous_ops_per_sec",
-        "keyspace_hits_ratio",
-        "keys",
-        "expires"
+        'used_memory',
+        'used_memory_rss',
+        'mem_fragmentation_ratio',
+        'connected_clients',
+        'commands_processed',
+        'instantaneous_ops_per_sec',
+        'keyspace_hits_ratio',
+        'keys',
+        'expires'
       ],
       nodeInfoParam: {
         nodeList: [],
         timeType: 0,
         timeRange: [new Date() - 15 * 60 * 1000, new Date()]
       },
-      nodeType: "",
+      nodeType: '',
       nodes: [],
       slowLogVisible: false,
       slowLogList: [],
@@ -481,202 +481,202 @@ export default {
       sentinelMasterList: [],
       sentinelMaster: {},
       sentinelMasterInfoVisible: false
-    };
+    }
   },
   methods: {
-    handleQuery(clusterId) {
-      this.queryVisible = true;
+    handleQuery (clusterId) {
+      this.queryVisible = true
     },
-    pickerDateTime() {
-      let timeRange = this.nodeInfoParam.timeRange;
-      let startTime = timeRange[0];
-      let endTime = timeRange[1];
-      this.nodeInfoParam.startTime = startTime;
-      this.nodeInfoParam.endTime = endTime;
+    pickerDateTime () {
+      let timeRange = this.nodeInfoParam.timeRange
+      let startTime = timeRange[0]
+      let endTime = timeRange[1]
+      this.nodeInfoParam.startTime = startTime
+      this.nodeInfoParam.endTime = endTime
     },
-    getAllNodeList(clusterId) {
-      let url = "/node-manage/getAllNodeList/" + clusterId;
-      this.slowLogRedisNodeList.push({ label: "All" });
+    getAllNodeList (clusterId) {
+      let url = '/node-manage/getAllNodeList/' + clusterId
+      this.slowLogRedisNodeList.push({ label: 'All' })
       API.get(
         url,
         null,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            let redisNodeList = [];
+            let redisNodeList = []
             result.data.forEach(node => {
-              var hostAndPort = node.host + ":" + node.port;
-              var role = node.nodeRole.toLowerCase();
+              var hostAndPort = node.host + ':' + node.port
+              var role = node.nodeRole.toLowerCase()
               let redisNode = {
                 node: hostAndPort,
                 role: role,
                 value: hostAndPort,
-                label: hostAndPort + " " + role
-              };
-              redisNodeList.push(redisNode);
-              this.slowLogRedisNodeList.push(redisNode);
-            });
-            this.redisNodeList = redisNodeList;
-            this.nodeType = "ALL_MASTER";
+                label: hostAndPort + ' ' + role
+              }
+              redisNodeList.push(redisNode)
+              this.slowLogRedisNodeList.push(redisNode)
+            })
+            this.redisNodeList = redisNodeList
+            this.nodeType = 'ALL_MASTER'
           } else {
-            message.error(result.message);
+            message.error(result.message)
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     },
-    timedRefresh() {
+    timedRefresh () {
       if (this.timer) {
-        clearInterval(this.timer);
+        clearInterval(this.timer)
       } else {
         this.timer = setInterval(() => {
-          this.refresh();
-        }, 60000 * 5);
+          this.refresh()
+        }, 600 * 5)
       }
     },
-    refresh() {
-      let nodeInfoParam = this.nodeInfoParam;
-      let timeRange = nodeInfoParam.timeRange;
-      let range = timeRange[1] - timeRange[0];
-      nodeInfoParam.timeRange = [new Date() - range, new Date()];
-      nodeInfoParam.startTime = new Date() - range;
-      nodeInfoParam.endTime = new Date();
-      this.nodeInfoParam = nodeInfoParam;
+    refresh () {
+      let nodeInfoParam = this.nodeInfoParam
+      let timeRange = nodeInfoParam.timeRange
+      let range = timeRange[1] - timeRange[0]
+      nodeInfoParam.timeRange = [new Date() - range, new Date()]
+      nodeInfoParam.startTime = new Date() - range
+      nodeInfoParam.endTime = new Date()
+      this.nodeInfoParam = nodeInfoParam
     },
-    getSlowLogList(slowLogParam) {
-      this.slowLogLoading = true;
-      let url = "/monitor/getSlowLogList";
+    getSlowLogList (slowLogParam) {
+      this.slowLogLoading = true
+      let url = '/monitor/getSlowLogList'
       API.post(
         url,
         slowLogParam,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            let slowLogList = result.data;
+            let slowLogList = result.data
             slowLogList.forEach(slowLog => {
-              slowLog.dateTime = formatTime(slowLog.dateTime);
-            });
-            this.slowLogList = slowLogList;
+              slowLog.dateTime = formatTime(slowLog.dateTime)
+            })
+            this.slowLogList = slowLogList
           } else {
-            message.error(result.message);
+            message.error(result.message)
           }
-          this.slowLogLoading = false;
+          this.slowLogLoading = false
         },
         err => {
-          this.slowLogLoading = false;
-          message.error(err);
+          this.slowLogLoading = false
+          message.error(err)
         }
-      );
+      )
     },
-    monitorItemChange(val) {
+    monitorItemChange (val) {
       setTimeout(() => {
-        this.refresh();
-      }, 300);
+        this.refresh()
+      }, 300)
     },
-    getSentinelMasterList(clusterId) {
-      let url = "/sentinel/getSentinelMasterList/" + clusterId;
+    getSentinelMasterList (clusterId) {
+      let url = '/sentinel/getSentinelMasterList/' + clusterId
       API.get(
         url,
         null,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            this.sentinelMasterList = result.data;
+            this.sentinelMasterList = result.data
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     }
   },
   watch: {
     nodes: {
-      handler: function() {
-        let nodeInfoParam = this.nodeInfoParam;
-        let nodeList = [];
+      handler: function () {
+        let nodeInfoParam = this.nodeInfoParam
+        let nodeList = []
         if (this.nodes.length > 0) {
           this.nodes.forEach(node => {
-            nodeList.push(node);
-          });
-          nodeInfoParam.nodeList = nodeList;
-          this.nodeInfoParam = nodeInfoParam;
+            nodeList.push(node)
+          })
+          nodeInfoParam.nodeList = nodeList
+          this.nodeInfoParam = nodeInfoParam
         }
       }
     },
     nodeType: {
-      handler: function() {
-        if (this.nodeType == "NODE") {
-          this.nodes = [];
-          return;
+      handler: function () {
+        if (this.nodeType == 'NODE') {
+          this.nodes = []
+          return
         }
-        let nodeInfoParam = this.nodeInfoParam;
-        let nodeList = [];
+        let nodeInfoParam = this.nodeInfoParam
+        let nodeList = []
         // default all master
-        if (this.nodeType == "ALL_MASTER") {
+        if (this.nodeType == 'ALL_MASTER') {
           this.redisNodeList.forEach(node => {
-            if (node.role == "master") {
-              nodeList.push(node.node);
+            if (node.role == 'master') {
+              nodeList.push(node.node)
             }
-          });
+          })
         }
-        if (this.nodeType == "ALL_MASTER" || this.nodeType == "ALL") {
-          this.nodes = [];
+        if (this.nodeType == 'ALL_MASTER' || this.nodeType == 'ALL') {
+          this.nodes = []
         }
-        nodeInfoParam.nodeList = nodeList;
-        this.nodeInfoParam = nodeInfoParam;
+        nodeInfoParam.nodeList = nodeList
+        this.nodeInfoParam = nodeInfoParam
       }
     },
     slowLogParam: {
-      handler: function() {
-        this.getSlowLogList(this.slowLogParam);
+      handler: function () {
+        this.getSlowLogList(this.slowLogParam)
       },
       deep: true
     }
   },
-  mounted() {
-    let clusterId = this.$route.params.clusterId;
+  mounted () {
+    let clusterId = this.$route.params.clusterId
     getClusterById(clusterId, cluster => {
-      this.cluster = cluster;
+      this.cluster = cluster
       if (parseInt(cluster.redisVersion.substring(0)) < 4) {
         for (var i = 0; i < this.selectedInfoItemList.length; i++) {
-          let infoItem = this.selectedInfoItemList[i];
+          let infoItem = this.selectedInfoItemList[i]
           if (
-            infoItem == "used_memory_overhead" ||
-            infoItem == "used_memory_dataset"
+            infoItem == 'used_memory_overhead' ||
+            infoItem == 'used_memory_dataset'
           ) {
-            this.selectedInfoItemList.splice(i, i);
+            this.selectedInfoItemList.splice(i, i)
           }
         }
       }
-      this.getAllNodeList(this.cluster.clusterId);
-      this.nodeInfoParam.clusterId = clusterId;
-      this.slowLogParam.clusterId = clusterId;
-      this.pickerDateTime();
-      this.timedRefresh();
-      this.isSentinelMode = cluster.redisMode == "sentinel";
+      this.getAllNodeList(this.cluster.clusterId)
+      this.nodeInfoParam.clusterId = clusterId
+      this.slowLogParam.clusterId = clusterId
+      this.pickerDateTime()
+      this.timedRefresh()
+      this.isSentinelMode = cluster.redisMode == 'sentinel'
       if (this.isSentinelMode) {
-        this.getSentinelMasterList(clusterId);
+        this.getSentinelMasterList(clusterId)
         this.infoItemList = [
-          "connections_received",
-          "rejected_connections",
-          "connected_clients",
-          "blocked_clients",
-          "commands_processed",
-          "instantaneous_ops_per_sec",
-          "cpu_sys",
-          "cpu_user"
-        ];
-        this.selectedInfoItemList = this.infoItemList;
+          'connections_received',
+          'rejected_connections',
+          'connected_clients',
+          'blocked_clients',
+          'commands_processed',
+          'instantaneous_ops_per_sec',
+          'cpu_sys',
+          'cpu_user'
+        ]
+        this.selectedInfoItemList = this.infoItemList
       }
-    });
+    })
   },
-  destroyed() {
-    clearInterval(this.timer);
+  destroyed () {
+    clearInterval(this.timer)
   }
-};
+}
 </script>
 
 <style scoped>

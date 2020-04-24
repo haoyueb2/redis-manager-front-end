@@ -24,11 +24,11 @@ export default {
           let installationEnvironmentList = []
           environmentList.forEach(environment => {
             let name = ''
-            if (environment == 0) {
+            if (environment === 0) {
               name = 'Docker'
-            } else if (environment == 1) {
+            } else if (environment === 1) {
               name = 'Machine'
-            } else if (environment == 3) {
+            } else if (environment === 3) {
               name = 'Humpback'
             }
             if (!isEmpty(name)) {
@@ -43,6 +43,7 @@ export default {
             installationEnvironmentList
           )
         },
+        // eslint-disable-next-line handle-callback-err
         err => {
           message.error('Get installation environment failed')
         }

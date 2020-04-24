@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
+import Register from '@/components/Register'
 import Index from '@/components/Index'
 import Dashboard from '@/components/dashboard/Dashboard'
 import RedisMonitor from '@/components/monitor/RedisMonitor'
@@ -22,8 +23,12 @@ import JobList from '@/components/rct/JobList'
 import JobResultDetail from '@/components/rct/JobResultDetail'
 
 import API from '@/api/api.js'
-import { store } from '@/vuex/store.js'
-import { isEmpty } from '@/utils/validate.js'
+import {
+  store
+} from '@/vuex/store.js'
+import {
+  isEmpty
+} from '@/utils/validate.js'
 
 Vue.use(Router)
 
@@ -34,19 +39,27 @@ Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
-  routes: [
-    {
+  routes: [{
       path: '/login',
       name: 'login',
       component: Login,
       hidden: true
     },
     {
+
+      path: '/register',
+
+      name: 'register',
+
+      component: Register,
+      hidden: true
+
+    },
+    {
       path: '/',
       name: 'index',
       component: Index,
-      children: [
-        {
+      children: [{
           name: 'dashboard',
           path: '/dashboard/group/:groupId',
           component: Dashboard
@@ -136,7 +149,9 @@ const router = new Router({
     {
       path: '*',
       hidden: true,
-      redirect: { path: '/404' }
+      redirect: {
+        path: '/404'
+      }
     }
   ]
 })
@@ -159,26 +174,42 @@ router.beforeEach((to, from, next) => {
             store.dispatch('setUser', result.data)
             next()
           } else {
-            next({ path: 'login' })
+            next({
+              path: 'login'
+            })
           }
         },
         () => {
-          next({ path: 'login' })
+          next({
+            path: 'login'
+          })
         }
       )
     } else {
-      next({ path: 'login' })
+      next({
+        path: 'login'
+      })
     }
 
     // admin
   } else if (user.userRole === 1 && toPath.indexOf('group-manage') > 0) {
-    next({ name: 'dashboard', params: { groupId: store.getters.getCurrentGroup.groupId } })
+    next({
+      name: 'dashboard',
+      params: {
+        groupId: store.getters.getCurrentGroup.groupId
+      }
+    })
   } else if (user.userRole === 2 && (toPath.indexOf('group-manage') > 0 || toPath.indexOf('user-manage') > 0 ||
-    toPath.indexOf('machine-manage') > 0 || toPath.indexOf('installation') > 0 ||
-    toPath.indexOf('channel-manage') > 0 || toPath.indexOf('rule-manage') > 0 ||
-    toPath.indexOf('redis-manage') > 0 || toPath.indexOf('alert-manage') > 0 ||
-    toPath.indexOf('edit-history') > 0)) {
-    next({ name: 'dashboard', params: { groupId: store.getters.getCurrentGroup.groupId } })
+      toPath.indexOf('machine-manage') > 0 || toPath.indexOf('installation') > 0 ||
+      toPath.indexOf('channel-manage') > 0 || toPath.indexOf('rule-manage') > 0 ||
+      toPath.indexOf('redis-manage') > 0 || toPath.indexOf('alert-manage') > 0 ||
+      toPath.indexOf('edit-history') > 0)) {
+    next({
+      name: 'dashboard',
+      params: {
+        groupId: store.getters.getCurrentGroup.groupId
+      }
+    })
   } else {
     next()
   }

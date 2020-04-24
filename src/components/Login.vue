@@ -3,58 +3,53 @@
   <el-container style="background-image: linear-gradient(0deg,#1ac5fa,#2ba3de 51%,#1d71f2);">
     <!-- #1d71f2 #1ac5fa -->
     <img
-      src="../assets/background.png"
-      style="position: absolute; z-index: 0;left: 0; top:32%; width: 100%; opacity:0.1;"
+      src="../assets/background.jpg"
+      style="position: absolute; z-index: 0;left: 0; top:0; width: 100%; opacity:0.1;"
     />
     <div class="login-wrapper">
       <el-card shadow="hover" class="content-wrapper">
-        <div slot="header">
+        <!-- <div slot="header">
           <b>Sign In</b>
-        </div>
-        <div>
-          <el-form :model="user" :rules="rules" ref="user">
-            <el-form-item prop="userName">
-              <el-input
-                prefix-icon="el-icon-user"
-                v-model.trim="user.userName"
-                placeholder="User Name"
-              ></el-input>
-            </el-form-item>
-            <el-form-item prop="password">
-              <el-input
-                prefix-icon="el-icon-key"
-                type="password"
-                v-model.trim="user.password"
-                placeholder="Password"
-                show-password
-              ></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" style="width: 100%;" @click="signIn('user')">Sign In</el-button>
-            </el-form-item>
-            <el-form-item v-if="authorization.enabled">
-              <el-button type="success" style="width: 100%;">
-                <el-link
-                  :href="authorization.server + authorization.siteKey"
-                  :underline="false"
-                  style="color: #fff"
-                >{{ authorization.companyName }} Sign In</el-link>
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-        <div class="link-wrapper">
-          <span>
-            <span>More about</span>
-            <el-link
-              type="primary"
-              target="_blank"
-              class="doc-link"
-              href="https://github.com/ngbdf/redis-manager/"
-              :underline="false"
-            >Redis Manager</el-link>
-          </span>
-        </div>
+        </div>-->
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="登录" name="first">
+            <div>
+              <el-form :model="user" :rules="rules" ref="user">
+                <el-form-item prop="userName">
+                  <el-input
+                    prefix-icon="el-icon-user"
+                    v-model.trim="user.userName"
+                    placeholder="User Name"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                  <el-input
+                    prefix-icon="el-icon-key"
+                    type="password"
+                    v-model.trim="user.password"
+                    placeholder="Password"
+                    show-password
+                  ></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" style="width: 100%;" @click="signIn('user')">Sign In</el-button>
+                </el-form-item>
+                <el-form-item v-if="authorization.enabled">
+                  <el-button type="success" style="width: 100%;">
+                    <el-link
+                      :href="authorization.server + authorization.siteKey"
+                      :underline="false"
+                      style="color: #fff"
+                    >{{ authorization.companyName }} Sign In</el-link>
+                  </el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="注册" name="second">
+            <Register></Register>
+          </el-tab-pane>
+        </el-tabs>
       </el-card>
     </div>
   </el-container>
@@ -64,6 +59,7 @@
 import API from '@/api/api.js'
 import { store } from '@/vuex/store.js'
 import message from '@/utils/message.js'
+import Register from '@/components/Register'
 export default {
   data () {
     return {
@@ -76,10 +72,12 @@ export default {
         password: [
           { required: true, message: 'Please enter password', trigger: 'blur' }
         ]
-      }
+      },
+      activeName: 'first'
     }
   },
   methods: {
+    handleClick (tab, event) {},
     getAuthorization () {
       let url = '/system/getAuthorization'
       API.get(
@@ -118,6 +116,7 @@ export default {
         }
       })
     }
+
     // getUserFromSession() {
     //   let url = "/user/getUserFromSession";
     //   API.get(
@@ -144,6 +143,9 @@ export default {
     })
     store.dispatch('setCurrentGroup', {})
     store.dispatch('setGroupList', [])
+  },
+  components: {
+    Register
   }
 }
 </script>
@@ -164,14 +166,5 @@ export default {
 }
 .el-divider {
   margin: 5px 0;
-}
-.link-wrapper {
-  display: flex;
-  justify-content: center;
-  font-size: 12px;
-  color: #909399;
-}
-.doc-link {
-  font-size: 12px;
 }
 </style>

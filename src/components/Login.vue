@@ -56,65 +56,65 @@
 </template>
 
 <script>
-import API from "@/api/api.js";
-import { store } from "@/vuex/store.js";
-import message from "@/utils/message.js";
-import Register from "@/components/Register";
+import API from '@/api/api.js'
+import { store } from '@/vuex/store.js'
+import message from '@/utils/message.js'
+import Register from '@/components/Register'
 export default {
-  data() {
+  data () {
     return {
       user: {},
       authorization: {},
       rules: {
         userName: [
-          { required: true, message: "Please enter user name", trigger: "blur" }
+          { required: true, message: 'Please enter user name', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "Please enter password", trigger: "blur" }
+          { required: true, message: 'Please enter password', trigger: 'blur' }
         ]
       },
-      activeName: "first"
-    };
+      activeName: 'first'
+    }
   },
   methods: {
-    handleClick(tab, event) {},
-    getAuthorization() {
-      let url = "/system/getAuthorization";
+    handleClick (tab, event) {},
+    getAuthorization () {
+      let url = '/system/getAuthorization'
       API.get(
         url,
         null,
         response => {
-          let authorization = response.data.data;
-          authorization.server += authorization.server.endsWith("/") ? "" : "/";
-          this.authorization = authorization;
+          let authorization = response.data.data
+          authorization.server += authorization.server.endsWith('/') ? '' : '/'
+          this.authorization = authorization
         },
         err => {
-          message.error("Get authorization failed");
+          message.error('Get authorization failed')
         }
-      );
+      )
     },
-    signIn(user) {
+    signIn (user) {
       this.$refs[user].validate(valid => {
         if (valid) {
-          let url = "/user/login";
+          let url = '/user/login'
           API.post(
             url,
             this.user,
             response => {
-              let result = response.data;
+              let result = response.data
               if (result.code == 0) {
-                store.dispatch("setUser", result.data);
-                this.$router.push({ name: "index" });
+                store.dispatch('setUser', result.data)
+                this.$router.push({ name: 'index' })
               } else {
-                message.error("User name or password wrong");
+                message.error('User name or password wrong')
               }
             },
             err => {
-              message.error(err);
+              message.error(err)
             }
-          );
+          )
         }
-      });
+      })
     }
 
     // getUserFromSession() {
@@ -135,19 +135,19 @@ export default {
     //   );
     // }
   },
-  mounted() {
-    //this.getUserFromSession();
-    this.getAuthorization();
-    store.dispatch("setUser", {
+  mounted () {
+    // this.getUserFromSession();
+    this.getAuthorization()
+    store.dispatch('setUser', {
       userRole: 2
-    });
-    store.dispatch("setCurrentGroup", {});
-    store.dispatch("setGroupList", []);
+    })
+    store.dispatch('setCurrentGroup', {})
+    store.dispatch('setGroupList', [])
   },
   components: {
     Register
   }
-};
+}
 </script>
 
 <style scoped>

@@ -231,7 +231,6 @@
         <span class="param-key">Cluster Name:</span>
         <el-tag size="mini">{{ installationParam.clusterName }}</el-tag>
 
-        
       </div>
       <div class="item-param">
         <span class="param-key">Redis Mode:</span>
@@ -272,269 +271,268 @@
 </template>
 
 <script>
-import { store } from "@/vuex/store.js";
-import { isEmpty, validateIpAndPort, validatePort } from "@/utils/validate.js";
-import API from "@/api/api.js";
-import apiConfig from "@/api/apiConfig.js";
-import axios from "axios";
-import message from "@/utils/message.js";
+import { store } from '@/vuex/store.js'
+import { isEmpty, validateIpAndPort, validatePort } from '@/utils/validate.js'
+import API from '@/api/api.js'
+import apiConfig from '@/api/apiConfig.js'
+import axios from 'axios'
+import message from '@/utils/message.js'
 export default {
-  data() {
+  data () {
     var validateClusterName = (rule, value, callback) => {
       if (isEmpty(value) || isEmpty(value.trim())) {
-        return callback(new Error("Please enter cluster name"));
+        return callback(new Error('Please enter cluster name'))
       } else {
-        let url = "/cluster/validateClusterName/" + value;
+        let url = '/cluster/validateClusterName/' + value
         API.get(
           url,
           null,
           response => {
-            let result = response.data;
+            let result = response.data
             if (result.code != 0) {
-              let cluster = result.data;
-              return callback(new Error(value + " has exist"));
+              let cluster = result.data
+              return callback(new Error(value + ' has exist'))
             } else {
-              callback();
+              callback()
             }
           },
           err => {
-            return callback(new Error("Network error, " + err));
+            return callback(new Error('Network error, ' + err))
           }
-        );
+        )
       }
-    };
+    }
     var validateStartPort = (rule, value, callback) => {
       if (!validatePort(value)) {
-        return callback(new Error("Incorrect port format"));
+        return callback(new Error('Incorrect port format'))
       }
-      callback();
-    };
+      callback()
+    }
     var validateMasterAndReplicaNumber = (rule, value, callback) => {
       if (value <= 0) {
-        return callback(new Error("Number must be greater than 0"));
+        return callback(new Error('Number must be greater than 0'))
       }
-      callback();
-    };
+      callback()
+    }
     var validateMasterNumber = (rule, value, callback) => {
-      if (this.installationParam.redisMode == "standalone" && value > 1) {
-        return callback(new Error("Standalone mode only need 1 master"));
+      if (this.installationParam.redisMode == 'standalone' && value > 1) {
+        return callback(new Error('Standalone mode only need 1 master'))
       }
-      callback();
-    };
+      callback()
+    }
     var validateTopology = (rule, value, callback) => {
-      let topology = value.trim();
+      let topology = value.trim()
       if (isEmpty(topology)) {
-        return callback(new Error("Please enter topology"));
+        return callback(new Error('Please enter topology'))
       }
-      let machineUserName = this.installationParam.machineUserName;
-      let machinePassword = this.installationParam.machinePassword;
+      let machineUserName = this.installationParam.machineUserName
+      let machinePassword = this.installationParam.machinePassword
       if (isEmpty(machineUserName) || isEmpty(machinePassword)) {
         return callback(
-          new Error("Please enter machine user name and password first")
-        );
+          new Error('Please enter machine user name and password first')
+        )
       }
-      let nodeListWithRole = topology.split(/[(\r\n)\r\n]+/);
-      let size = nodeListWithRole.length;
-      let machineList = [];
-      let redisNodeList = [];
+      let nodeListWithRole = topology.split(/[(\r\n)\r\n]+/)
+      let size = nodeListWithRole.length
+      let machineList = []
+      let redisNodeList = []
       for (var i = 0; i < size; i++) {
-        let nodeAndRole = nodeListWithRole[i].split(/\s+/);
-        let oneLineSize = nodeAndRole.length;
+        let nodeAndRole = nodeListWithRole[i].split(/\s+/)
+        let oneLineSize = nodeAndRole.length
 
         if (i == 0) {
           if (oneLineSize != 2) {
-            return callback(new Error("Line " + (i + 1) + ": wrong format"));
-          } else if (nodeAndRole[1] != "master") {
-            return callback(new Error("Line " + (i + 1) + ": node not master"));
+            return callback(new Error('Line ' + (i + 1) + ': wrong format'))
+          } else if (nodeAndRole[1] != 'master') {
+            return callback(new Error('Line ' + (i + 1) + ': node not master'))
           }
         }
         if (
           i != 0 &&
-          this.installationParam.redisMode == "standalone" &&
-          nodeAndRole[1] == "master"
+          this.installationParam.redisMode == 'standalone' &&
+          nodeAndRole[1] == 'master'
         ) {
           return callback(
             new Error(
-              "Line " + (i + 1) + ": standalone mode only need one master"
+              'Line ' + (i + 1) + ': standalone mode only need one master'
             )
-          );
+          )
         }
-        let nodeRole = nodeAndRole[1];
+        let nodeRole = nodeAndRole[1]
         if (isEmpty(nodeRole)) {
-          nodeRole = "slave";
+          nodeRole = 'slave'
         }
-        let ipAndPort = nodeAndRole[0].split(":");
+        let ipAndPort = nodeAndRole[0].split(':')
         if (validateIpAndPort(ipAndPort)) {
-          return callback(new Error("Line " + (i + 1) + ": wrong format"));
+          return callback(new Error('Line ' + (i + 1) + ': wrong format'))
         }
-        let host = ipAndPort[0];
-        let port = ipAndPort[1];
+        let host = ipAndPort[0]
+        let port = ipAndPort[1]
         let machine = {
           userName: machineUserName,
           password: machinePassword,
           host: host
-        };
-        let inMachineList = false;
+        }
+        let inMachineList = false
         machineList.forEach(machine => {
           if (machine.host == host) {
-            inMachineList = true;
-            return;
+            inMachineList = true
           }
-        });
+        })
         if (!inMachineList) {
-          machineList.push(machine);
+          machineList.push(machine)
         }
-        let redisNodeRepeat = false;
+        let redisNodeRepeat = false
         redisNodeList.forEach(redisNode => {
           if (redisNode.host == host && redisNode.port == port) {
-            redisNodeRepeat = true;
+            redisNodeRepeat = true
           }
-        });
+        })
         if (redisNodeRepeat) {
-          return callback(new Error("Line " + (i + 1) + ": redis node repeat"));
+          return callback(new Error('Line ' + (i + 1) + ': redis node repeat'))
         } else {
           redisNodeList.push({
             host: host,
             port: port,
             nodeRole: nodeRole.toLocaleUpperCase()
-          });
+          })
         }
       }
-      this.installationParam.machineList = machineList;
-      this.installationParam.redisNodeList = redisNodeList;
-      callback();
-    };
+      this.installationParam.machineList = machineList
+      this.installationParam.redisNodeList = redisNodeList
+      callback()
+    }
     return {
       dockerImages: [],
       machineImages: [],
       humpbackImages: [],
       installationParam: {
-        groupId: "",
-        clusterName: "",
-        redisPassword: "",
-        redisMode: "cluster",
-        image: "",
+        groupId: '',
+        clusterName: '',
+        redisPassword: '',
+        redisMode: 'cluster',
+        image: '',
         create: true,
         machineIdList: [],
-        machineList: [{ ip: "" }, { ip: "" }],
+        machineList: [{ ip: '' }, { ip: '' }],
         autoBuild: true,
         autoInit: false,
         sudo: true,
-        machineUserName: "",
-        machinePassword: "",
-        redisNodes: "127.0.0.1:8001 master\n127.0.0.1:8002",
+        machineUserName: '',
+        machinePassword: '',
+        redisNodes: '127.0.0.1:8001 master\n127.0.0.1:8002',
         installationEnvironment: 0
       },
       installationInfoVisible: false,
       // installationConsole: "Prepare to install redis...",
-      websocketURI: "",
+      websocketURI: '',
       rules: {
         clusterName: [
           {
             required: true,
             validator: validateClusterName,
-            trigger: "blur"
+            trigger: 'blur'
           }
         ],
         redisMode: [
           {
             required: true,
-            message: "Please select redis mode",
-            trigger: "change"
+            message: 'Please select redis mode',
+            trigger: 'change'
           }
         ],
         installationEnvironment: [
           {
             required: true,
-            message: "Please select installation environment",
-            trigger: "change"
+            message: 'Please select installation environment',
+            trigger: 'change'
           }
         ],
         image: [
           {
             required: true,
-            message: "Please select image",
-            trigger: "change"
+            message: 'Please select image',
+            trigger: 'change'
           }
         ],
         machines: [
           {
             required: true,
-            message: "Please select machines",
-            trigger: "change"
+            message: 'Please select machines',
+            trigger: 'change'
           }
         ],
         startPort: [
           {
             required: true,
-            message: "Please enter start port",
-            trigger: "blur"
+            message: 'Please enter start port',
+            trigger: 'blur'
           },
           {
             required: true,
             validator: validateStartPort,
-            trigger: "blur"
+            trigger: 'blur'
           }
         ],
         masterNumber: [
           {
             required: true,
-            message: "Please eneter master number",
-            trigger: "blur"
+            message: 'Please eneter master number',
+            trigger: 'blur'
           },
           {
-            type: "number",
-            message: "Please enter integer",
-            trigger: "blur"
+            type: 'number',
+            message: 'Please enter integer',
+            trigger: 'blur'
           },
           {
             required: true,
             validator: validateMasterAndReplicaNumber,
-            trigger: "blur"
+            trigger: 'blur'
           },
           {
             required: true,
             validator: validateMasterNumber,
-            trigger: "blur"
+            trigger: 'blur'
           }
         ],
         replicaNumber: [
           {
             required: true,
-            message: "Please eneter replica number",
-            trigger: "blur"
+            message: 'Please eneter replica number',
+            trigger: 'blur'
           },
-          { type: "number", message: "Please enter integer", trigger: "blur" },
+          { type: 'number', message: 'Please enter integer', trigger: 'blur' },
           {
             required: true,
             validator: validateMasterAndReplicaNumber,
-            trigger: "blur"
+            trigger: 'blur'
           }
         ],
         machineUserName: [
           {
             required: true,
-            message: "Please enter machine user name",
-            trigger: "blur"
+            message: 'Please enter machine user name',
+            trigger: 'blur'
           }
         ],
         machinePassword: [
           {
             required: true,
-            message: "Please enter machine password",
-            trigger: "blur"
+            message: 'Please enter machine password',
+            trigger: 'blur'
           }
         ],
         redisNodes: [
           {
             required: true,
-            message: "Please enter redis topology",
-            trigger: "blur"
+            message: 'Please enter redis topology',
+            trigger: 'blur'
           },
           {
             required: true,
             validator: validateTopology,
-            trigger: "blur"
+            trigger: 'blur'
           }
         ]
       },
@@ -543,24 +541,24 @@ export default {
       step: -1,
       installationLoading: false,
       humpbackEnabled: false
-    };
+    }
   },
   methods: {
-    handleMachine(val) {
+    handleMachine (val) {
       val.forEach(item => {
         // console.log(item[1]);
-      });
+      })
     },
-    buildMachineIdList() {
-      this.installationParam.machineIdList = [];
+    buildMachineIdList () {
+      this.installationParam.machineIdList = []
       this.installationParam.machines.forEach(item => {
-        this.installationParam.machineIdList.push(item[1]);
-      });
+        this.installationParam.machineIdList.push(item[1])
+      })
     },
-    buildParam() {
-      let installationParam = this.installationParam;
+    buildParam () {
+      let installationParam = this.installationParam
       if (installationParam.autoBuild) {
-        this.buildMachineIdList();
+        this.buildMachineIdList()
       }
       let cluster = {
         groupId: this.currentGroup.groupId,
@@ -571,266 +569,266 @@ export default {
         installationEnvironment: installationParam.installationEnvironment,
         image: installationParam.image,
         clusterInfo: installationParam.clusterInfo
-      };
-      this.installationParam.cluster = cluster;
+      }
+      this.installationParam.cluster = cluster
     },
-    installationCheck(installationParam) {
+    installationCheck (installationParam) {
       this.$refs[installationParam].validate(valid => {
         if (valid) {
-          //this.installationInfoVisible = true;
-          this.buildParam();
+          // this.installationInfoVisible = true;
+          this.buildParam()
           try {
-            this.initWebSocket();
+            this.initWebSocket()
           } catch (err) {
-            message.error("Open websocket failed.")
+            message.error('Open websocket failed.')
           }
-          this.install();
+          this.install()
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
-    install() {
-      this.installationLoading = true;
-      this.step = 0;
-      let url = "/installation/installFlow";
+    install () {
+      this.installationLoading = true
+      this.step = 0
+      let url = '/installation/installFlow'
       API.post(
         url,
         this.installationParam,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
             this.$router.push({
-              name: "dashboard",
+              name: 'dashboard',
               params: { groupId: this.currentGroup.groupId }
-            });
+            })
           } else {
-            message.error("Install failed");
+            message.error('Install failed')
           }
-          this.installationLoading = false;
+          this.installationLoading = false
         },
         err => {
-          this.installationLoading = false;
-          message.error(err);
+          this.installationLoading = false
+          message.error(err)
         }
-      );
+      )
     },
-    getDockerImageList() {
-      let url = "/installation/getDockerImages";
+    getDockerImageList () {
+      let url = '/installation/getDockerImages'
       API.get(
         url,
         null,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            this.dockerImages = result.data;
+            this.dockerImages = result.data
           } else {
-            message.error(result.message);
+            message.error(result.message)
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     },
-    getMachineImageList() {
-      let url = "/installation/getMachineImages";
+    getMachineImageList () {
+      let url = '/installation/getMachineImages'
       API.get(
         url,
         null,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            this.machineImages = result.data;
+            this.machineImages = result.data
           } else {
-            message.error(result.message);
+            message.error(result.message)
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     },
-    getHumpbackImageList() {
-      let url = "/installation/getHumpbackImages";
+    getHumpbackImageList () {
+      let url = '/installation/getHumpbackImages'
       API.get(
         url,
         null,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            this.humpbackImages = result.data;
+            this.humpbackImages = result.data
           } else {
-            message.error(result.message);
+            message.error(result.message)
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     },
-    getMachineList(groupId) {
+    getMachineList (groupId) {
       if (isEmpty(groupId)) {
-        return;
+        return
       }
-      let url = "/machine/getHierarchyMachineList/" + groupId;
+      let url = '/machine/getHierarchyMachineList/' + groupId
       API.get(
         url,
         null,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            let hierarchyMachineList = result.data;
+            let hierarchyMachineList = result.data
             hierarchyMachineList.forEach(oneMachineGroup => {
-              let machineGroupName = oneMachineGroup.machineGroupName;
-              oneMachineGroup.label = machineGroupName;
-              oneMachineGroup.value = machineGroupName;
-              let children = oneMachineGroup.children;
+              let machineGroupName = oneMachineGroup.machineGroupName
+              oneMachineGroup.label = machineGroupName
+              oneMachineGroup.value = machineGroupName
+              let children = oneMachineGroup.children
               children.forEach(machine => {
-                machine.label = machine.host;
-                machine.value = machine.machineId;
-              });
-              this.allMachineList = hierarchyMachineList;
-            });
+                machine.label = machine.host
+                machine.value = machine.machineId
+              })
+              this.allMachineList = hierarchyMachineList
+            })
           } else {
-            message.error(result.message);
+            message.error(result.message)
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     },
-    validateMachine(machine, handler) {},
-    initWebSocket() {
-      this.websock = new WebSocket(this.websocketURI);
-      this.websock.onmessage = this.websocketonmessage;
-      this.websock.onopen = this.websocketonopen;
-      this.websock.onerror = this.websocketonerror;
-      this.websock.onclose = this.websocketclose;
+    validateMachine (machine, handler) {},
+    initWebSocket () {
+      this.websock = new WebSocket(this.websocketURI)
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onopen = this.websocketonopen
+      this.websock.onerror = this.websocketonerror
+      this.websock.onclose = this.websocketclose
     },
-    websocketonopen() {
-      //连接建立之后执行send方法发送数据
-      message.info("Open socket");
-      this.websocketsend(this.installationParam.clusterName);
+    websocketonopen () {
+      // 连接建立之后执行send方法发送数据
+      message.info('Open socket')
+      this.websocketsend(this.installationParam.clusterName)
     },
-    websocketonerror() {
-      message.error("Build websocket failed, but you can still install.");
+    websocketonerror () {
+      message.error('Build websocket failed, but you can still install.')
     },
-    websocketonmessage(msg) {
-      //数据接收
-      var message = msg.data;
+    websocketonmessage (msg) {
+      // 数据接收
+      var message = msg.data
       if (!isEmpty(message)) {
-        if (message.indexOf("Start preparing installation") > -1) {
-          this.step = 0;
-        } else if (message.indexOf("Start pulling redis.conf") > -1) {
-          this.step = 1;
-        } else if (message.indexOf("Start pulling image") > -1) {
-          this.step = 2;
-        } else if (message.indexOf("Start installing redis node") > -1) {
-          this.step = 3;
-        } else if (message.indexOf("Start initializing") > -1) {
-          this.step = 4;
-        } else if (message.indexOf("Start saving to database") > -1) {
-          this.step = 5;
+        if (message.indexOf('Start preparing installation') > -1) {
+          this.step = 0
+        } else if (message.indexOf('Start pulling redis.conf') > -1) {
+          this.step = 1
+        } else if (message.indexOf('Start pulling image') > -1) {
+          this.step = 2
+        } else if (message.indexOf('Start installing redis node') > -1) {
+          this.step = 3
+        } else if (message.indexOf('Start initializing') > -1) {
+          this.step = 4
+        } else if (message.indexOf('Start saving to database') > -1) {
+          this.step = 5
         }
         // this.installationConsole += " \n ";
         // this.installationConsole += message;
       }
     },
-    websocketsend(data) {
-      //数据发送
-      this.websock.send(data);
+    websocketsend (data) {
+      // 数据发送
+      this.websock.send(data)
     },
-    websocketclose(e) {
-      //关闭
-      message.error("Close websocket", e);
+    websocketclose (e) {
+      // 关闭
+      message.error('Close websocket', e)
     },
-    getHumpbackEnabled() {
-      let url = "/system/humpbackEnabled";
+    getHumpbackEnabled () {
+      let url = '/system/humpbackEnabled'
       API.get(
         url,
         null,
         response => {
-          let humpbackEnabled = response.data.data;
+          let humpbackEnabled = response.data.data
           if (humpbackEnabled) {
-            this.humpbackEnabled = humpbackEnabled;
-            this.getHumpbackImageList();
+            this.humpbackEnabled = humpbackEnabled
+            this.getHumpbackImageList()
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     },
-    getServerAddress() {
-      let url = "/system/getServerAddress";
+    getServerAddress () {
+      let url = '/system/getServerAddress'
       API.get(
         url,
         null,
         response => {
-          let serverAddress = response.data.data;
-          this.websocketURI = "ws://" + serverAddress + "/websocket/install";
+          let serverAddress = response.data.data
+          this.websocketURI = 'ws://' + serverAddress + '/websocket/install'
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     }
   },
   computed: {
-    currentGroup() {
-      return store.getters.getCurrentGroup;
+    currentGroup () {
+      return store.getters.getCurrentGroup
     },
-    installationEnvironmentList() {
-      return store.getters.getInstallationEnvironmentList;
+    installationEnvironmentList () {
+      return store.getters.getInstallationEnvironmentList
     }
   },
   watch: {
-    "installationParam.autoBuild": function(newValue, oldValue) {
-      let fields = this.$refs["installationParam"].fields;
+    'installationParam.autoBuild': function (newValue, oldValue) {
+      let fields = this.$refs['installationParam'].fields
 
       fields.map(field => {
         if (
-          field.prop === "startPort" ||
-          field.prop === "masterNumber" ||
-          field.prop === "replicaNumber" ||
-          field.prop === "machineUserName" ||
-          field.prop === "machinePassword" ||
-          field.prop === "topology" ||
-          field.prop === "machines"
+          field.prop === 'startPort' ||
+          field.prop === 'masterNumber' ||
+          field.prop === 'replicaNumber' ||
+          field.prop === 'machineUserName' ||
+          field.prop === 'machinePassword' ||
+          field.prop === 'topology' ||
+          field.prop === 'machines'
         ) {
-          field.resetField();
-          return false;
+          field.resetField()
+          return false
         }
-      });
+      })
     },
-    "installationParam.installationEnvironment": function(newValue, oldValue) {
-      let fields = this.$refs["installationParam"].fields;
+    'installationParam.installationEnvironment': function (newValue, oldValue) {
+      let fields = this.$refs['installationParam'].fields
       fields.map(field => {
-        if (field.prop === "image") {
-          field.resetField();
-          return false;
+        if (field.prop === 'image') {
+          field.resetField()
+          return false
         }
-      });
+      })
     },
-    currentGroup(group) {
-      let groupId = group.groupId;
+    currentGroup (group) {
+      let groupId = group.groupId
       this.$router.push({
-        name: "installation",
+        name: 'installation',
         params: { groupId: groupId }
-      });
+      })
     }
   },
-  mounted() {
-    this.getDockerImageList();
-    this.getMachineImageList();
-    let groupId = this.currentGroup.groupId;
-    this.getMachineList(groupId);
-    this.getHumpbackEnabled();
-    this.getServerAddress();
+  mounted () {
+    this.getDockerImageList()
+    this.getMachineImageList()
+    let groupId = this.currentGroup.groupId
+    this.getMachineList(groupId)
+    this.getHumpbackEnabled()
+    // this.getServerAddress()
   }
-};
+}
 </script>
 
 <style scoped>

@@ -65,7 +65,7 @@
                 <i class="el-icon-discover"></i>
                 <span slot="title">Dashboard</span>
               </el-menu-item>
-              <el-submenu index="2" v-if="currentUser.userRole < 2">
+              <!-- <el-submenu index="2" v-if="currentUser.userRole < 2">
                 <template slot="title">
                   <i class="el-icon-bell"></i>
                   <span>Alert Manage</span>
@@ -74,7 +74,7 @@
                   <el-menu-item index="2-1" @click="toChannelManage()">Channel Manage</el-menu-item>
                   <el-menu-item index="2-2" @click="toRuleManage()">Rule Manage</el-menu-item>
                 </el-menu-item-group>
-              </el-submenu>
+              </el-submenu> -->
               <el-submenu index="3" v-if="currentUser.userRole < 2">
                 <template slot="title">
                   <i class="el-icon-setting"></i>
@@ -85,7 +85,7 @@
                   <el-menu-item index="3-2" @click="toMachineManage()">Machine Manage</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-               <el-submenu index="4" v-if="currentUser.userRole < 2">
+               <!-- <el-submenu index="4" v-if="currentUser.userRole < 2">
                 <template slot="title">
                   <i class="el-icon-cpu"></i>
                   <span>RCT</span>
@@ -93,14 +93,14 @@
                 <el-menu-item-group>
                   <el-menu-item index="4-1" @click="toRct()">Config</el-menu-item>
                 </el-menu-item-group>
-                <!-- <el-menu-item-group>
+                <el-menu-item-group>
                   <el-menu-item index="9-2" @click="toTaskProgress()">TaskProgress</el-menu-item>
-                </el-menu-item-group> -->
+                </el-menu-item-group>
                 <el-menu-item-group>
                   <el-menu-item index="4-2" @click="toJobList()">Job List</el-menu-item>
                 </el-menu-item-group>
-              </el-submenu>
-              <el-submenu index="5">
+              </el-submenu> -->
+              <!-- <el-submenu index="5">
                 <template slot="title">
                   <i class="el-icon-takeaway-box"></i>
                   <span>Tools</span>
@@ -111,22 +111,22 @@
                     @click="toDataOperation()"
                     v-if="currentUser.userRole < 2"
                   >Data Operation</el-menu-item>
-                  <!-- <el-menu-item index="5-2">Other</el-menu-item> -->
+                  <el-menu-item index="5-2">Other</el-menu-item>
                 </el-menu-item-group>
-              </el-submenu>
-              <el-menu-item index="6" @click="toGroupManage()" v-if="currentUser.userRole < 1">
+              </el-submenu> -->
+              <!-- <el-menu-item index="6" @click="toGroupManage()" v-if="currentUser.userRole < 1">
                 <i class="el-icon-user-solid"></i>
                 <span slot="title">Group Manage</span>
-              </el-menu-item>
+              </el-menu-item> -->
               <el-menu-item index="7" @click="toUserManage()" v-if="currentUser.userRole < 2">
                 <i class="el-icon-user"></i>
                 <span slot="title">User Manage</span>
               </el-menu-item>
-              <el-menu-item index="8" @click="toEditHistory()" v-if="currentUser.userRole < 2">
-                <!-- <i class="el-icon-odometer"></i> -->
+              <!-- <el-menu-item index="8" @click="toEditHistory()" v-if="currentUser.userRole < 2">
+                <i class="el-icon-odometer"></i>
                 <i class="el-icon-edit"></i>
                 <span slot="title">Edit History</span>
-              </el-menu-item>
+              </el-menu-item> -->
             </el-menu>
           </el-col>
         </el-row>
@@ -204,49 +204,49 @@ export default {
         params: { groupId: this.selectGroupId }
       })
     },
-    toChannelManage () {
-      this.$router.push({
-        name: 'channel-manage',
-        params: { groupId: this.selectGroupId }
-      })
-    },
-    toJobList () {
-      this.$router.push({
-        name: 'jobList',
-        params: { groupId: this.selectGroupId }
-      })
-    },
-    toRct () {
-      this.$router.push({
-        name: 'Config'
-      })
-    },
-    toTaskProgress () {
-      this.$router.push({
-        name: 'TaskProgress'
-      })
-    },
-    toRuleManage () {
-      this.$router.push({
-        name: 'rule-manage',
-        params: { groupId: this.selectGroupId }
-      })
-    },
+    // toChannelManage () {
+    //   this.$router.push({
+    //     name: 'channel-manage',
+    //     params: { groupId: this.selectGroupId }
+    //   })
+    // },
+    // toJobList () {
+    //   this.$router.push({
+    //     name: 'jobList',
+    //     params: { groupId: this.selectGroupId }
+    //   })
+    // },
+    // toRct () {
+    //   this.$router.push({
+    //     name: 'Config'
+    //   })
+    // },
+    // toTaskProgress () {
+    //   this.$router.push({
+    //     name: 'TaskProgress'
+    //   })
+    // },
+    // toRuleManage () {
+    //   this.$router.push({
+    //     name: 'rule-manage',
+    //     params: { groupId: this.selectGroupId }
+    //   })
+    // },
     toMachineManage () {
       this.$router.push({
         name: 'machine-manage',
         params: { groupId: this.selectGroupId }
       })
     },
-    toGroupManage () {
-      this.$router.push({ name: 'group-manage' })
-    },
-    toEditHistory () {
-      this.$router.push({
-        name: 'edit-history',
-        params: { groupId: this.selectGroupId }
-      })
-    },
+    // toGroupManage () {
+    //   this.$router.push({ name: 'group-manage' })
+    // },
+    // toEditHistory () {
+    //   this.$router.push({
+    //     name: 'edit-history',
+    //     params: { groupId: this.selectGroupId }
+    //   })
+    // },
     toUserManage () {
       this.$router.push({
         name: 'user-manage',

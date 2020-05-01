@@ -58,9 +58,9 @@
               text-color="#909399"
               active-text-color="#fff"
             >
-              <!-- background-color="#2a3542"
+              background-color="#2a3542"
               text-color="#909399"
-              active-text-color="#fff"-->
+              active-text-color="#fff"
               <el-menu-item index="1" @click="toDashboard()">
                 <i class="el-icon-discover"></i>
                 <span slot="title">Dashboard</span>

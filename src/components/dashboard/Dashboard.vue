@@ -180,18 +180,18 @@
 </template>
 
 <script>
-import query from '@/components/tool/Query'
-import editCluster from '@/components/manage/EditCluster'
-import { store } from '@/vuex/store.js'
-import { isEmpty } from '@/utils/validate.js'
-import API from '@/api/api.js'
-import message from '@/utils/message.js'
+import query from "@/components/tool/Query";
+import editCluster from "@/components/manage/EditCluster";
+import { store } from "@/vuex/store.js";
+import { isEmpty } from "@/utils/validate.js";
+import API from "@/api/api.js";
+import message from "@/utils/message.js";
 export default {
   components: {
     query,
     editCluster
   },
-  data () {
+  data() {
     return {
       // overview: {
       //   // userNumber: 0,
@@ -202,39 +202,39 @@ export default {
       clusterList: [],
       cluster: {},
       queryVisible: false,
-      editClusterId: '',
+      editClusterId: "",
       editClusterVisible: false,
       deleteClusterVisible: false,
       clusterListLoading: false
-    }
+    };
   },
 
   methods: {
-    toMonitor (clusterId) {
+    toMonitor(clusterId) {
       this.$router.push({
-        name: 'redis-monitor',
+        name: "redis-monitor",
         params: { clusterId: clusterId }
-      })
+      });
     },
-    toManage (clusterId) {
+    toManage(clusterId) {
       this.$router.push({
-        name: 'redis-manage',
+        name: "redis-manage",
         params: {
           clusterId: clusterId
         }
-      })
+      });
     },
-    toAlertManage (clusterId) {
+    toAlertManage(clusterId) {
       this.$router.push({
-        name: 'alert-manage',
+        name: "alert-manage",
         params: {
           clusterId: clusterId
         }
-      })
+      });
     },
-    handleQuery (cluster) {
-      this.cluster = cluster
-      this.queryVisible = true
+    handleQuery(cluster) {
+      this.cluster = cluster;
+      this.queryVisible = true;
     },
     // getOverview(groupId) {
     //   let url = "/group/overview/" + groupId;
@@ -258,107 +258,107 @@ export default {
     //     );
     //   }
     // },
-    getClusterList (groupId) {
-      let url = '/cluster/getClusterList/' + groupId
-      this.clusterListLoading = true
+    getClusterList(groupId) {
+      let url = "/cluster/getClusterList/" + groupId;
+      this.clusterListLoading = true;
       if (!isEmpty(groupId)) {
         API.get(
           url,
           null,
           response => {
-            let result = response.data
+            let result = response.data;
             if (result.code == 0) {
-              let clusterList = result.data
-              let healthNumber = 0
-              let badNumber = 0
+              let clusterList = result.data;
+              let healthNumber = 0;
+              let badNumber = 0;
               clusterList.forEach(cluster => {
-                if (cluster.clusterState == 'HEALTH') {
-                  healthNumber++
+                if (cluster.clusterState == "HEALTH") {
+                  healthNumber++;
                 } else {
-                  badNumber++
+                  badNumber++;
                 }
-              })
+              });
               // this.overview.healthNumber = healthNumber;
               // this.overview.badNumber = badNumber;
-              this.clusterList = clusterList
+              this.clusterList = clusterList;
             } else {
-              message.error('Get cluster list failed')
+              message.error("Get cluster list failed");
             }
-            this.clusterListLoading = false
+            this.clusterListLoading = false;
           },
           err => {
-            this.clusterListLoading = false
-            message.error(err)
+            this.clusterListLoading = false;
+            message.error(err);
           }
-        )
+        );
       }
     },
-    editCluster (clusterId) {
-      this.editClusterId = clusterId
-      this.editClusterVisible = true
+    editCluster(clusterId) {
+      this.editClusterId = clusterId;
+      this.editClusterVisible = true;
     },
-    showDeleteCluster (clusterId) {
+    showDeleteCluster(clusterId) {
       this.clusterList.forEach(cluster => {
         if (cluster.clusterId == clusterId) {
-          this.cluster = cluster
-          this.deleteClusterVisible = true
+          this.cluster = cluster;
+          this.deleteClusterVisible = true;
         }
-      })
+      });
     },
-    deleteCluster (clusterId) {
-      let url = '/cluster/deleteCluster'
+    deleteCluster(clusterId) {
+      let url = "/cluster/deleteCluster";
       let data = {
         clusterId: clusterId,
         groupId: this.currentGroupId
-      }
+      };
       API.post(
         url,
         data,
         response => {
-          let result = response.data
+          let result = response.data;
           if (result.code == 0) {
-            this.cluster = {}
-            this.getClusterList(this.currentGroupId)
-            this.deleteClusterVisible = false
+            this.cluster = {};
+            this.getClusterList(this.currentGroupId);
+            this.deleteClusterVisible = false;
           } else {
-            message.error('Delete cluster failed')
+            message.error("Delete cluster failed");
           }
         },
         err => {
-          message.error(err)
+          message.error(err);
         }
-      )
+      );
     },
-    closeEditClusterDialog (editClusterVisible) {
-      this.editClusterVisible = editClusterVisible
-      this.getClusterList(this.currentGroupId)
+    closeEditClusterDialog(editClusterVisible) {
+      this.editClusterVisible = editClusterVisible;
+      this.getClusterList(this.currentGroupId);
     }
   },
   computed: {
-    currentGroupId () {
-      return store.getters.getCurrentGroup.groupId
+    currentGroupId() {
+      return store.getters.getCurrentGroup.groupId;
     },
-    currentUser () {
-      return store.getters.getUser
+    currentUser() {
+      return store.getters.getUser;
     }
   },
   watch: {
-    currentGroupId (groupId) {
-      this.getClusterList(groupId)
+    currentGroupId(groupId) {
+      this.getClusterList(groupId);
       // this.getOverview(groupId);
       this.$router.push({
-        name: 'dashboard',
+        name: "dashboard",
         params: { groupId: groupId }
-      })
+      });
     }
   },
-  mounted () {
-    let groupId = this.currentGroupId
-    this.getClusterList(groupId)
+  mounted() {
+    let groupId = this.currentGroupId;
+    this.getClusterList(groupId);
     // this.getOverview(groupId);
-    this.userRole = store.getters.getUserRole
+    this.userRole = store.getters.getUserRole;
   }
-}
+};
 </script>
 
 <style scoped>
@@ -464,6 +464,8 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
+  border: 2px solid blue;
+  border-radius: 20px;
 }
 
 .box-card-title {

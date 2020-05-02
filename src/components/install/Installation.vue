@@ -10,7 +10,7 @@
         <el-step title="Finish" description></el-step>
       </el-steps>
     </div>
-    <el-row>
+    <el-row type="flex" class="row-bg" justify="center">
       <el-col :xl="12" :lg="12" :md="24" :sm="24" v-loading="installationLoading">
         <div class="form-wrapper">
           <div class="form">

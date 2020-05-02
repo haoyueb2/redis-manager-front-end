@@ -21,7 +21,7 @@ function apiAxios(method, url, params, successHandler, failureHandler) {
         }).catch(function (err) {
             if (err.response && (err.response.code === 401 || err.response.status === 404)) {
                 message.warning('user infomation has expried,please login!')
-                router.push({ name: 'login' })
+                // router.push({ name: 'login' })
               } else {
                 failureHandler(err)
             }

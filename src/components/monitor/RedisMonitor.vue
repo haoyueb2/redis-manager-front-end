@@ -1,6 +1,6 @@
 <template>
   <div id="monitor">
-    <div class="body-wrapper" v-loading="clusterLoading">
+    <!-- <div class="body-wrapper" v-loading="clusterLoading">
       <el-row>
         <el-col :span="24">
           <div class="monitor-title">
@@ -94,7 +94,7 @@
           </el-col>
         </el-row>
       </div>
-    </div>
+    </div> -->
 
     <div
       class="body-wrapper"

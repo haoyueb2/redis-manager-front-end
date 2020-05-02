@@ -3,7 +3,7 @@
     <el-header class="header header-wrapper">
       <div class="grid-content logo-wrapper">
         <i class="el-icon-s-fold aside-operation" @click="collapseHandler"></i>
-        <img src="../assets/redis-manager.png" style="width: 150px; height: 15px" />
+        <p id="headerTitle">Redis Manager</p> 
       </div>
       <div class="grid-content right-content" id="right-content">
         <el-select
@@ -27,11 +27,12 @@
         <div class="user-info">
           <!-- <span class="user-name">Redis</span> -->
           <el-dropdown @command="handleCommand" class="user-dropdown">
-            <el-image
+            <!-- <el-image
               :src="currentUser.avatar"
               @error="errorHandler"
               fit="cover"
-            >{{ currentUser.userName }}</el-image>
+            >{{ currentUser.userName }}</el-image> -->
+            <a id="currentName" >{{currentUser.userName}}</a>
             <el-dropdown-menu slot="dropdown" style="min-width: 180px">
               <el-dropdown-item disabled>
                 Signed in as
@@ -58,11 +59,11 @@
               text-color="#909399"
               active-text-color="#fff"
             >
-              background-color="#2a3542"
+              <!-- background-color="#2a3542"
               text-color="#909399"
-              active-text-color="#fff"
+              active-text-color="#fff" -->
               <el-menu-item index="1" @click="toDashboard()">
-                <i class="el-icon-discover"></i>
+                <!-- <i class="el-icon-discover"></i> -->
                 <span slot="title">Dashboard</span>
               </el-menu-item>
               <!-- <el-submenu index="2" v-if="currentUser.userRole < 2">
@@ -75,14 +76,14 @@
                   <el-menu-item index="2-2" @click="toRuleManage()">Rule Manage</el-menu-item>
                 </el-menu-item-group>
               </el-submenu> -->
-              <el-submenu index="3" v-if="currentUser.userRole < 2">
+              <el-submenu index="2" v-if="currentUser.userRole < 2">
                 <template slot="title">
-                  <i class="el-icon-setting"></i>
+                  <!-- <i class="el-icon-setting"></i> -->
                   <span slot="title">Installation</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="3-1" @click="toInstallation()">Installation</el-menu-item>
-                  <el-menu-item index="3-2" @click="toMachineManage()">Machine Manage</el-menu-item>
+                  <el-menu-item index="2-1" @click="toInstallation()">Installation</el-menu-item>
+                  <el-menu-item index="2-2" @click="toMachineManage()">Machine Manage</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
                <!-- <el-submenu index="4" v-if="currentUser.userRole < 2">
@@ -118,8 +119,8 @@
                 <i class="el-icon-user-solid"></i>
                 <span slot="title">Group Manage</span>
               </el-menu-item> -->
-              <el-menu-item index="7" @click="toUserManage()" v-if="currentUser.userRole < 2">
-                <i class="el-icon-user"></i>
+              <el-menu-item index="3" @click="toUserManage()" v-if="currentUser.userRole < 2">
+                <!-- <i class="el-icon-user"></i> -->
                 <span slot="title">User Manage</span>
               </el-menu-item>
               <!-- <el-menu-item index="8" @click="toEditHistory()" v-if="currentUser.userRole < 2">
@@ -188,9 +189,9 @@ export default {
     //   );
     // },
     signOut () {
-      // this.$router.push({
-      //   name: 'login'
-      // })
+      this.$router.push({
+        name: 'login'
+      })
     },
     toDashboard () {
       this.$router.push({
@@ -367,7 +368,7 @@ export default {
           if (result.code == 0) {
             store.dispatch('setUser', result.data)
           } else {
-            this.signOut()
+            // this.signOut()
           }
         },
         err => {
@@ -413,7 +414,11 @@ export default {
 #index {
   height: 100%;
 }
-
+#headerTitle{
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  color:rgb(57, 117, 221);
+}
 /*页面下拉，header固定不动*/
 .header {
   position: fixed;
@@ -514,7 +519,7 @@ export default {
 }
 
 .main {
-  background-color: #89da99;
+  background-color: rgb(57, 117, 221);
 }
 
 .is-collapse {
@@ -530,5 +535,24 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+a:link {
+    text-decoration: none;
+}
+
+
+a:visited {
+    text-decoration: none;
+}
+
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+a:active {
+    text-decoration: none;
 }
 </style>

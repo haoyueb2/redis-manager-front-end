@@ -188,9 +188,9 @@ export default {
     //   );
     // },
     signOut () {
-      this.$router.push({
-        name: 'login'
-      })
+      // this.$router.push({
+      //   name: 'login'
+      // })
     },
     toDashboard () {
       this.$router.push({

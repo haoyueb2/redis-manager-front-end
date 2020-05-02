@@ -60,6 +60,7 @@ import API from '@/api/api.js'
 import { store } from '@/vuex/store.js'
 import message from '@/utils/message.js'
 import Register from '@/components/Register'
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -96,12 +97,14 @@ export default {
     signIn (user) {
       this.$refs[user].validate(valid => {
         if (valid) {
+          // axios.defaults.baseURL = '/apis2'
           let url = '/user/login'
           API.post(
             url,
             this.user,
             response => {
               let result = response.data
+              // axios.defaults.baseURL = '/apis'
               if (result.code == 0) {
                 store.dispatch('setUser', result.data)
                 this.$router.push({ name: 'index' })
@@ -110,6 +113,7 @@ export default {
               }
             },
             err => {
+              // axios.defaults.baseURL = '/apis'
               message.error(err)
             }
           )

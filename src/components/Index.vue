@@ -188,9 +188,9 @@ export default {
     //   );
     // },
     signOut () {
-      // this.$router.push({
-      //   name: 'login'
-      // })
+      this.$router.push({
+        name: 'login'
+      })
     },
     toDashboard () {
       this.$router.push({
@@ -367,7 +367,7 @@ export default {
           if (result.code == 0) {
             store.dispatch('setUser', result.data)
           } else {
-            this.signOut()
+            // this.signOut()
           }
         },
         err => {

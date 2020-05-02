@@ -14,7 +14,7 @@ module.exports = {
       '/apis': {
         target: 'http://106.54.231.68:8182', // 后台api
         changeOrigin: true,
-        logLevel: 'debug',
+        // logLevel: 'debug',
         // secure: true,
         pathRewrite: {
           '^/apis/user/': '/user/',

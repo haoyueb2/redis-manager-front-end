@@ -62,11 +62,6 @@
         <el-card class="box-card" shadow="hover">
           <div slot="header" class="box-card-title">
             <span>{{ cluster.clusterName }}</span>
-            <i
-              class="el-icon-lock health"
-              style="float: right; padding: 3px 0"
-              v-if="cluster.redisPassword != null && cluster.redisPassword != ''"
-            ></i>
           </div>
           <div>
             <div class="text item">
@@ -145,6 +140,21 @@
               @click="toManage(cluster.clusterId)"
               v-if="currentUser.userRole < 2"
             >Manage</el-button>
+            <el-dropdown trigger="click" class="more-operation" v-if="currentUser.userRole < 2">
+              <el-button size="mini" title="Edit or delete" type="info" icon="el-icon-more" circle></el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  icon="el-icon-edit-outline"
+                  class="edit"
+                  @click.native="editCluster(cluster.clusterId)"
+                >Edit</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-delete"
+                  class="delete"
+                  @click.native="showDeleteCluster(cluster.clusterId)"
+                >Delete</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </el-card>
       </el-col>

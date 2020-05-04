@@ -1,29 +1,17 @@
 
 <template>
-  <el-container id="index">
+  <el-container id="index" style="background-image: linear-gradient(0deg,#1ac5fa,#2ba3de 51%,#1d71f2);">
+        <img
+      src="../assets/background.jpg"
+      style="position: absolute; z-index: 0;left: 0; top:0; width: 100%; opacity:0.1;"
+    />
     <el-header class="header header-wrapper">
       <div class="grid-content logo-wrapper">
         <i class="el-icon-s-fold aside-operation" @click="collapseHandler"></i>
         <p id="headerTitle">Redis Manager</p> 
       </div>
       <div class="grid-content right-content" id="right-content">
-        <el-select
-          v-model="selectGroupId"
-          placeholder="Select Group"
-          size="mini"
-          class="group-select"
-          @change="selectGroup()"
-        >
-          <el-option
-            v-for="group in groupList"
-            :key="group.groupId"
-            :label="group.groupName"
-            :value="group.groupId"
-          ></el-option>
-        </el-select>
-        <div v-if="permission">
-          <el-button size="mini" type="text" @click="importVisible = true">Import Cluster</el-button>
-        </div>
+
 
         <div class="user-info">
           <!-- <span class="user-name">Redis</span> -->
@@ -77,16 +65,22 @@
                   <el-menu-item index="2-2" @click="toRuleManage()">Rule Manage</el-menu-item>
                 </el-menu-item-group>
               </el-submenu> -->
-              <el-submenu index="2" v-if="currentUser.userRole < 2">
+              <el-menu-item index="2" @click="toInstallation()">
+                <span slot="title">Installation</span>
+              </el-menu-item>
+              <el-menu-item index="3" @click="toMachineManage()">
+                <span slot="title">Machine Manage</span>
+              </el-menu-item>
+              <!-- <el-submenu index="2" v-if="currentUser.userRole < 2">
                 <template slot="title">
                   <!-- <i class="el-icon-setting"></i> -->
-                  <span slot="title">Installation</span>
+                  <!-- <span slot="title">Installation</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="2-1" @click="toInstallation()">Installation</el-menu-item>
                   <el-menu-item index="2-2" @click="toMachineManage()">Machine Manage</el-menu-item>
                 </el-menu-item-group>
-              </el-submenu>
+              </el-submenu> --> -->
                <!-- <el-submenu index="4" v-if="currentUser.userRole < 2">
                 <template slot="title">
                   <i class="el-icon-cpu"></i>
@@ -120,10 +114,10 @@
                 <i class="el-icon-user-solid"></i>
                 <span slot="title">Group Manage</span>
               </el-menu-item> -->
-              <el-menu-item index="3" @click="toUserManage()" v-if="currentUser.userRole < 2">
+              <!-- <el-menu-item index="3" @click="toUserManage()" v-if="currentUser.userRole < 2">
                 <!-- <i class="el-icon-user"></i> -->
-                <span slot="title">User Manage</span>
-              </el-menu-item>
+                <!-- <span slot="title">User Manage</span>
+              </el-menu-item> --> -->
               <!-- <el-menu-item index="8" @click="toEditHistory()" v-if="currentUser.userRole < 2">
                 <i class="el-icon-odometer"></i>
                 <i class="el-icon-edit"></i>
@@ -249,12 +243,12 @@ export default {
     //     params: { groupId: this.selectGroupId }
     //   })
     // },
-    toUserManage () {
-      this.$router.push({
-        name: 'user-manage',
-        params: { groupId: this.selectGroupId }
-      })
-    },
+    // toUserManage () {
+    //   this.$router.push({
+    //     name: 'user-manage',
+    //     params: { groupId: this.selectGroupId }
+    //   })
+    // },
     selectGroup () {
       if (!isEmpty(this.selectGroupId)) {
         this.groupList.forEach(group => {
@@ -519,9 +513,11 @@ export default {
   background-color: #2a3542;
 }
 
-.main {
-  background-color: rgb(57, 117, 221);
-}
+/* .main {
+  background-image:url("../assets/background.jpg") ;
+  background-repeat:no-repeat;
+  background-size: cover;
+} */
 
 .is-collapse {
   width: auto !important;

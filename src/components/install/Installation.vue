@@ -623,6 +623,7 @@ export default {
         this.installationParam,
         response => {
           let result = response.data;
+          console.log(result);
           if (result.code == 0) {
             this.$router.push({
               name: "dashboard",

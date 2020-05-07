@@ -10,7 +10,7 @@
         <el-step title="Finish" description></el-step>
       </el-steps>
     </div>
-    <el-row type="flex" class="row-bg" justify="center">
+    <el-row>
       <el-col :xl="12" :lg="12" :md="24" :sm="24" v-loading="installationLoading">
         <div class="form-wrapper">
           <div class="form">
@@ -35,14 +35,14 @@
                   show-word-limit
                 ></el-input>
               </el-form-item>
-              <!-- <el-form-item label="Redis Mode" prop="redisMode">
+              <el-form-item label="Redis Mode" prop="redisMode">
                 <el-radio-group v-model="installationParam.redisMode">
                   <el-radio label="cluster">Cluster</el-radio>
                   <el-radio label="standalone">Standalone</el-radio>
                 </el-radio-group>
-              </el-form-item>-->
+              </el-form-item>
               <!-- environment start -->
-              <!-- <el-form-item label="Environment" prop="installationEnvironment">
+              <el-form-item label="Environment" prop="installationEnvironment">
                 <el-radio-group v-model="installationParam.installationEnvironment">
                   <el-radio
                     v-for="environment in installationEnvironmentList"
@@ -50,7 +50,7 @@
                     :label="environment.type"
                   >{{ environment.name }}</el-radio>
                 </el-radio-group>
-              </el-form-item>-->
+              </el-form-item>
               <!-- environment end -->
               <!-- image start -->
               <el-form-item
@@ -107,9 +107,9 @@
               </el-form-item>
               <!-- image end -->
 
-              <!-- <el-form-item label="Auto Build" prop="autoBuild">
+              <el-form-item label="Auto Build" prop="autoBuild">
                 <el-switch v-model="installationParam.autoBuild"></el-switch>
-              </el-form-item>-->
+              </el-form-item>
               <!-- auto install start -->
 
               <el-form-item label="Machine List" prop="machines" v-if="installationParam.autoBuild">
@@ -178,7 +178,7 @@
               </el-form-item>
 
               <!-- custom installation end -->
-              <!-- <el-form-item label="Sudo" prop="sudo">
+              <el-form-item label="Sudo" prop="sudo">
                 <el-switch v-model="installationParam.sudo"></el-switch>
                 <el-tooltip
                   class="item"
@@ -188,7 +188,7 @@
                 >
                   <i class="el-icon-info info"></i>
                 </el-tooltip>
-              </el-form-item>-->
+              </el-form-item>
               <!-- <el-form-item
                 label="Init Slot"
                 prop="autoInit"
@@ -203,7 +203,7 @@
                 >
                   <i class="el-icon-info info"></i>
                 </el-tooltip>
-              </el-form-item>-->
+              </el-form-item> -->
               <el-form-item label="Cluster Info" prop="clusterInfo">
                 <el-input type="input" v-model="installationParam.clusterInfo"></el-input>
               </el-form-item>
@@ -220,7 +220,7 @@
           <div class="console-title">Redis Installation Console</div>
           <pre class="console">{{ installationConsole }}</pre>
         </div>
-      </el-col>-->
+      </el-col> -->
     </el-row>
     <!-- <el-dialog title="Installation Params" :visible.sync="installationInfoVisible" width="50%">
       <div class="item-param">
@@ -292,29 +292,6 @@ export default {
             if (result.code != 0) {
               let cluster = result.data
               return callback(new Error(value + ' has exist'))
-            } else {
-              callback()
-            }
-          },
-          err => {
-            return callback(new Error('Network error, ' + err))
-          }
-        )
-      }
-    }
-    var validateClusterNameCurrentUsed = (rule, value, callback) => {
-      if (isEmpty(value) || isEmpty(value.trim())) {
-        return callback(new Error('Please enter cluster name'))
-      } else {
-        let url = '/installation/validateClusterName/' + value
-        API.get(
-          url,
-          null,
-          response => {
-            let result = response.data
-            if (result.code != 0) {
-              let cluster = result.data
-              return callback(new Error(value + ' is being installed'))
             } else {
               callback()
             }
@@ -447,27 +424,23 @@ export default {
         installationEnvironment: 0
       },
       installationInfoVisible: false,
-      installationConsole: 'Prepare to install redis...',
+      // installationConsole: "Prepare to install redis...",
+      websocketURI: '',
       rules: {
         clusterName: [
           {
             required: true,
             validator: validateClusterName,
             trigger: 'blur'
-          },
-          {
-            required: true,
-            validator: validateClusterNameCurrentUsed,
-            trigger: 'blur'
           }
         ],
-        // redisMode: [
-        //   {
-        //     required: true,
-        //     message: "Please select redis mode",
-        //     trigger: "change"
-        //   }
-        // ],
+        redisMode: [
+          {
+            required: true,
+            message: 'Please select redis mode',
+            trigger: 'change'
+          }
+        ],
         installationEnvironment: [
           {
             required: true,
@@ -564,11 +537,10 @@ export default {
         ]
       },
       allMachineList: [],
+      websock: null,
       step: -1,
       installationLoading: false,
-      humpbackEnabled: false,
-      logTimer: null,
-      isInstallationStart: false
+      humpbackEnabled: false
     }
   },
   methods: {
@@ -605,7 +577,11 @@ export default {
         if (valid) {
           // this.installationInfoVisible = true;
           this.buildParam()
-          this.isInstallationStart = true
+          try {
+            this.initWebSocket()
+          } catch (err) {
+            message.error('Open websocket failed.')
+          }
           this.install()
         } else {
           return false
@@ -621,7 +597,6 @@ export default {
         this.installationParam,
         response => {
           let result = response.data
-          console.log(result)
           if (result.code == 0) {
             this.$router.push({
               name: 'dashboard',
@@ -725,6 +700,50 @@ export default {
       )
     },
     validateMachine (machine, handler) {},
+    initWebSocket () {
+      this.websock = new WebSocket(this.websocketURI)
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onopen = this.websocketonopen
+      this.websock.onerror = this.websocketonerror
+      this.websock.onclose = this.websocketclose
+    },
+    websocketonopen () {
+      // 连接建立之后执行send方法发送数据
+      message.info('Open socket')
+      this.websocketsend(this.installationParam.clusterName)
+    },
+    websocketonerror () {
+      message.error('Build websocket failed, but you can still install.')
+    },
+    websocketonmessage (msg) {
+      // 数据接收
+      var message = msg.data
+      if (!isEmpty(message)) {
+        if (message.indexOf('Start preparing installation') > -1) {
+          this.step = 0
+        } else if (message.indexOf('Start pulling redis.conf') > -1) {
+          this.step = 1
+        } else if (message.indexOf('Start pulling image') > -1) {
+          this.step = 2
+        } else if (message.indexOf('Start installing redis node') > -1) {
+          this.step = 3
+        } else if (message.indexOf('Start initializing') > -1) {
+          this.step = 4
+        } else if (message.indexOf('Start saving to database') > -1) {
+          this.step = 5
+        }
+        // this.installationConsole += " \n ";
+        // this.installationConsole += message;
+      }
+    },
+    websocketsend (data) {
+      // 数据发送
+      this.websock.send(data)
+    },
+    websocketclose (e) {
+      // 关闭
+      message.error('Close websocket', e)
+    },
     getHumpbackEnabled () {
       let url = '/system/humpbackEnabled'
       API.get(
@@ -742,44 +761,19 @@ export default {
         }
       )
     },
-    getLogs () {
-      if (this.isInstallationStart) {
-        let url =
-          '/installation/getInstallationLogs/' +
-          this.installationParam.cluster.clusterName
-        API.get(
-          url,
-          null,
-          response => {
-            let logList = response.data.data
-            if (logList.length == 0) {
-              return
-            }
-            logList.forEach(log => {
-              if (!isEmpty(log)) {
-                if (log.indexOf('Start preparing installation') > -1) {
-                  this.step = 0
-                } else if (log.indexOf('Start pulling redis.conf') > -1) {
-                  this.step = 1
-                } else if (log.indexOf('Start pulling image') > -1) {
-                  this.step = 2
-                } else if (log.indexOf('Start installing redis node') > -1) {
-                  this.step = 3
-                } else if (log.indexOf('Start initializing') > -1) {
-                  this.step = 4
-                } else if (log.indexOf('Start saving to database') > -1) {
-                  this.step = 5
-                }
-                this.installationConsole += ' \n '
-                this.installationConsole += log
-              }
-            })
-          },
-          err => {
-            message.error(err)
-          }
-        )
-      }
+    getServerAddress () {
+      let url = '/system/getServerAddress'
+      API.get(
+        url,
+        null,
+        response => {
+          let serverAddress = response.data.data
+          this.websocketURI = 'ws://' + serverAddress + '/websocket/install'
+        },
+        err => {
+          message.error(err)
+        }
+      )
     }
   },
   computed: {
@@ -824,7 +818,6 @@ export default {
         name: 'installation',
         params: { groupId: groupId }
       })
-      this.getMachineList(groupId)
     }
   },
   mounted () {
@@ -833,19 +826,7 @@ export default {
     let groupId = this.currentGroup.groupId
     this.getMachineList(groupId)
     this.getHumpbackEnabled()
-    if (this.logTimer == null) {
-      this.logTimer = setInterval(() => {
-        this.getLogs()
-      }, 1000)
-    }
-  },
-  created () {
-    clearInterval(this.logTimer)
-    this.logTimer = null
-  },
-  beforeDestroy () {
-    clearInterval(this.logTimer)
-    this.logTimer = null
+    // this.getServerAddress()
   }
 }
 </script>

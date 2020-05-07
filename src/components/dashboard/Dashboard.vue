@@ -65,7 +65,9 @@
             <i
               class="el-icon-lock health"
               style="float: right; padding: 3px 0"
-              v-if="cluster.redisPassword != null && cluster.redisPassword != ''"
+              v-if="
+                cluster.redisPassword != null && cluster.redisPassword != ''
+              "
             ></i>
           </div>
           <div>
@@ -75,8 +77,11 @@
                 size="mini"
                 v-if="cluster.clusterState == 'HEALTH'"
                 type="success"
-              >{{ cluster.clusterState }}</el-tag>
-              <el-tag size="mini" v-else type="danger">{{ cluster.clusterState }}</el-tag>
+                >{{ cluster.clusterState }}</el-tag
+              >
+              <el-tag size="mini" v-else type="danger">{{
+                cluster.clusterState
+              }}</el-tag>
             </div>
             <div class="text item">
               Model:
@@ -108,7 +113,11 @@
             </div>
             <div class="text item" v-if="cluster.redisMode == 'cluster'">
               Slots Assigned(ok/assigned):
-              <el-tag size="mini">{{ cluster.clusterSlotsOk }}/{{ cluster.clusterSlotsAssigned }}</el-tag>
+              <el-tag size="mini"
+                >{{ cluster.clusterSlotsOk }}/{{
+                  cluster.clusterSlotsAssigned
+                }}</el-tag
+              >
             </div>
             <div class="text item" v-if="cluster.redisMode == 'standalone'">
               DB Size:
@@ -120,23 +129,37 @@
             </div>
             <div class="text item">
               Environment:
-              <el-tag size="mini" v-if="cluster.installationEnvironment == 0">Docker</el-tag>
-              <el-tag size="mini" v-else-if="cluster.installationEnvironment == 1">Machine</el-tag>
-              <el-tag size="mini" v-else-if="cluster.installationEnvironment == 3">Humpback</el-tag>
+              <el-tag size="mini" v-if="cluster.installationEnvironment == 0"
+                >Docker</el-tag
+              >
+              <el-tag
+                size="mini"
+                v-else-if="cluster.installationEnvironment == 1"
+                >Machine</el-tag
+              >
+              <el-tag
+                size="mini"
+                v-else-if="cluster.installationEnvironment == 3"
+                >Humpback</el-tag
+              >
             </div>
             <div class="text item">
               From:
-              <el-tag size="mini" v-if="cluster.installationType == 0">Redis Manager</el-tag>
+              <el-tag size="mini" v-if="cluster.installationType == 0"
+                >Redis Manager</el-tag
+              >
               <el-tag size="mini" v-else>Import</el-tag>
             </div>
           </div>
           <div class="card-bottom">
             <el-button
+              id = "monitor"
               size="mini"
               title="Monitor"
               type="primary"
               @click="toMonitor(cluster.clusterId)"
-            >Monitor</el-button>
+              >Monitor</el-button
+            >
 
             <el-button
               size="mini"
@@ -144,7 +167,25 @@
               type="success"
               @click="toManage(cluster.clusterId)"
               v-if="currentUser.userRole < 2"
-            >Manage</el-button>
+              >Manage</el-button
+            >
+            <el-button
+              size="mini"
+              title="下载配置"
+              type="success"
+              @click="downloadFiles(cluster.clusterId)"
+              >下载配置</el-button
+            >
+
+            <el-upload
+              id = "upload"
+              action=""
+              :http-request="uploadFiles"
+              :before-upload="handleBeforeUpload(cluster.clusterId)"
+              :multiple="false"
+            >
+              <el-button size="mini" type="primary">上传配置</el-button>
+            </el-upload>
           </div>
         </el-card>
       </el-col>
@@ -164,16 +205,30 @@
       :close-on-click-modal="false"
       v-if="editClusterVisible"
     >
-      <editCluster @closeDialog="closeEditClusterDialog" :clusterId="editClusterId"></editCluster>
+      <editCluster
+        @closeDialog="closeEditClusterDialog"
+        :clusterId="editClusterId"
+      ></editCluster>
     </el-dialog>
-    <el-dialog title="Delete Cluster" :visible.sync="deleteClusterVisible" width="30%">
+    <el-dialog
+      title="Delete Cluster"
+      :visible.sync="deleteClusterVisible"
+      width="30%"
+    >
       <span>
         Are you sure to delete
         <b>{{ cluster.clusterName }}</b> ?
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">Cancel</el-button>
-        <el-button size="small" type="danger" @click="deleteCluster(cluster.clusterId)">Delete</el-button>
+        <el-button size="small" @click="dialogVisible = false"
+          >Cancel</el-button
+        >
+        <el-button
+          size="small"
+          type="danger"
+          @click="deleteCluster(cluster.clusterId)"
+          >Delete</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -186,6 +241,7 @@ import { store } from '@/vuex/store.js'
 import { isEmpty } from '@/utils/validate.js'
 import API from '@/api/api.js'
 import message from '@/utils/message.js'
+import FileSaver from 'file-saver'
 export default {
   components: {
     query,
@@ -201,6 +257,7 @@ export default {
       // },
       clusterList: [],
       cluster: {},
+      clusterId: 0,
       queryVisible: false,
       editClusterId: '',
       editClusterVisible: false,
@@ -224,6 +281,51 @@ export default {
         }
       })
     },
+    handleBeforeUpload (id) {
+      this.clusterId = id
+    },
+    // clusterId什么意思，item为何获取不到？
+    uploadFiles (item) {
+      // Create new formData object
+      const fd = new FormData()
+      // append the file you want to upload
+      fd.append('fileName', item.file)
+      // add other data to the form data object if needed
+      fd.append('clusterid', this.clusterId)
+      // send call the api to upload files using axios or any other means
+      let url = '/node-manage/importConfig'
+      API.post(
+        url,
+        fd,
+        response => {
+          let result = response.data
+          if (result.code == 0) {
+            this.humpbackImages = result.data
+          } else {
+            message.error(result.message)
+          }
+        },
+        err => {
+          message.error(err)
+        }
+      )
+    },
+    downloadFiles (clusterId) {
+      let url = '/node-manage/exportConfig/' + clusterId
+      API.get(
+        url,
+        null,
+        response => {
+          let result = response.data
+          result = JSON.stringify(result)
+          const blob = new Blob([result], { type: '' })
+          FileSaver.saveAs(blob, 'config.json')
+        },
+        err => {
+          message.error(err)
+        }
+      )
+    },
     toAlertManage (clusterId) {
       this.$router.push({
         name: 'alert-manage',
@@ -236,6 +338,7 @@ export default {
       this.cluster = cluster
       this.queryVisible = true
     },
+    upLoad () {},
     // getOverview(groupId) {
     //   let url = "/group/overview/" + groupId;
     //   if (!isEmpty(groupId)) {
@@ -462,6 +565,9 @@ export default {
   clear: both;
 } */
 
+#upload {
+  padding-left: 10px;
+}
 .box-card {
   margin-bottom: 20px;
 }
@@ -472,7 +578,7 @@ export default {
 
 .card-bottom {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .more-operation {

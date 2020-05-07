@@ -62,13 +62,6 @@
         <el-card class="box-card" shadow="hover">
           <div slot="header" class="box-card-title">
             <span>{{ cluster.clusterName }}</span>
-            <i
-              class="el-icon-lock health"
-              style="float: right; padding: 3px 0"
-              v-if="
-                cluster.redisPassword != null && cluster.redisPassword != ''
-              "
-            ></i>
           </div>
           <div>
             <div class="text item">
@@ -153,7 +146,6 @@
           </div>
           <div class="card-bottom">
             <el-button
-              id = "monitor"
               size="mini"
               title="Monitor"
               type="primary"
@@ -169,6 +161,7 @@
               v-if="currentUser.userRole < 2"
               >Manage</el-button
             >
+
             <el-button
               size="mini"
               title="下载配置"
@@ -178,7 +171,7 @@
             >
 
             <el-upload
-              id = "upload"
+              id="upload"
               action=""
               :http-request="uploadFiles"
               :before-upload="handleBeforeUpload(cluster.clusterId)"
@@ -186,6 +179,35 @@
             >
               <el-button size="mini" type="primary">上传配置</el-button>
             </el-upload>
+
+            <el-dropdown
+              id = "dropdown"
+              trigger="click"
+              class="more-operation"
+              v-if="currentUser.userRole < 2"
+            >
+              <el-button
+                size="mini"
+                title="Edit or delete"
+                type="info"
+                icon="el-icon-more"
+                circle
+              ></el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  icon="el-icon-edit-outline"
+                  class="edit"
+                  @click.native="editCluster(cluster.clusterId)"
+                  >Edit</el-dropdown-item
+                >
+                <el-dropdown-item
+                  icon="el-icon-delete"
+                  class="delete"
+                  @click.native="showDeleteCluster(cluster.clusterId)"
+                  >Delete</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </el-card>
       </el-col>
@@ -281,10 +303,17 @@ export default {
         }
       })
     },
+    toAlertManage (clusterId) {
+      this.$router.push({
+        name: 'alert-manage',
+        params: {
+          clusterId: clusterId
+        }
+      })
+    },
     handleBeforeUpload (id) {
       this.clusterId = id
     },
-    // clusterId什么意思，item为何获取不到？
     uploadFiles (item) {
       // Create new formData object
       const fd = new FormData()
@@ -326,19 +355,10 @@ export default {
         }
       )
     },
-    toAlertManage (clusterId) {
-      this.$router.push({
-        name: 'alert-manage',
-        params: {
-          clusterId: clusterId
-        }
-      })
-    },
     handleQuery (cluster) {
       this.cluster = cluster
       this.queryVisible = true
     },
-    upLoad () {},
     // getOverview(groupId) {
     //   let url = "/group/overview/" + groupId;
     //   if (!isEmpty(groupId)) {
@@ -565,11 +585,10 @@ export default {
   clear: both;
 } */
 
-#upload {
-  padding-left: 10px;
-}
 .box-card {
   margin-bottom: 20px;
+  border: 2px solid blue;
+  border-radius: 20px;
 }
 
 .box-card-title {
@@ -579,8 +598,14 @@ export default {
 .card-bottom {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
-
+#dropdown{
+  margin-top: 10px;
+}
+#upload{
+  margin-top: 10px;
+}
 .more-operation {
   margin-left: 12px;
 }

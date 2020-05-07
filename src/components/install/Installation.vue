@@ -10,7 +10,7 @@
         <el-step title="Finish" description></el-step>
       </el-steps>
     </div>
-    <el-row>
+    <el-row type="flex" class="row-bg" justify="center">
       <el-col :xl="12" :lg="12" :md="24" :sm="24" v-loading="installationLoading">
         <div class="form-wrapper">
           <div class="form">
@@ -35,14 +35,14 @@
                   show-word-limit
                 ></el-input>
               </el-form-item>
-              <el-form-item label="Redis Mode" prop="redisMode">
+              <!-- <el-form-item label="Redis Mode" prop="redisMode">
                 <el-radio-group v-model="installationParam.redisMode">
                   <el-radio label="cluster">Cluster</el-radio>
                   <el-radio label="standalone">Standalone</el-radio>
                 </el-radio-group>
-              </el-form-item>
+              </el-form-item>-->
               <!-- environment start -->
-              <el-form-item label="Environment" prop="installationEnvironment">
+              <!-- <el-form-item label="Environment" prop="installationEnvironment">
                 <el-radio-group v-model="installationParam.installationEnvironment">
                   <el-radio
                     v-for="environment in installationEnvironmentList"
@@ -50,7 +50,7 @@
                     :label="environment.type"
                   >{{ environment.name }}</el-radio>
                 </el-radio-group>
-              </el-form-item>
+              </el-form-item>-->
               <!-- environment end -->
               <!-- image start -->
               <el-form-item
@@ -107,9 +107,9 @@
               </el-form-item>
               <!-- image end -->
 
-              <el-form-item label="Auto Build" prop="autoBuild">
+              <!-- <el-form-item label="Auto Build" prop="autoBuild">
                 <el-switch v-model="installationParam.autoBuild"></el-switch>
-              </el-form-item>
+              </el-form-item>-->
               <!-- auto install start -->
 
               <el-form-item label="Machine List" prop="machines" v-if="installationParam.autoBuild">
@@ -178,7 +178,7 @@
               </el-form-item>
 
               <!-- custom installation end -->
-              <el-form-item label="Sudo" prop="sudo">
+              <!-- <el-form-item label="Sudo" prop="sudo">
                 <el-switch v-model="installationParam.sudo"></el-switch>
                 <el-tooltip
                   class="item"
@@ -188,7 +188,7 @@
                 >
                   <i class="el-icon-info info"></i>
                 </el-tooltip>
-              </el-form-item>
+              </el-form-item>-->
               <!-- <el-form-item
                 label="Init Slot"
                 prop="autoInit"
@@ -215,12 +215,12 @@
           </div>
         </div>
       </el-col>
-      <el-col :xl="12" :lg="12" :md="24" :sm="24">
+      <!-- <el-col :xl="12" :lg="12" :md="24" :sm="24">
         <div class="console-wrapper">
           <div class="console-title">Redis Installation Console</div>
           <pre class="console">{{ installationConsole }}</pre>
         </div>
-      </el-col>
+      </el-col>-->
     </el-row>
     <!-- <el-dialog title="Installation Params" :visible.sync="installationInfoVisible" width="50%">
       <div class="item-param">
@@ -277,7 +277,6 @@ import API from '@/api/api.js'
 import apiConfig from '@/api/apiConfig.js'
 import axios from 'axios'
 import message from '@/utils/message.js'
-
 export default {
   data () {
     var validateClusterName = (rule, value, callback) => {
@@ -462,13 +461,13 @@ export default {
             trigger: 'blur'
           }
         ],
-        redisMode: [
-          {
-            required: true,
-            message: 'Please select redis mode',
-            trigger: 'change'
-          }
-        ],
+        // redisMode: [
+        //   {
+        //     required: true,
+        //     message: "Please select redis mode",
+        //     trigger: "change"
+        //   }
+        // ],
         installationEnvironment: [
           {
             required: true,
@@ -622,6 +621,7 @@ export default {
         this.installationParam,
         response => {
           let result = response.data
+          console.log(result)
           if (result.code == 0) {
             this.$router.push({
               name: 'dashboard',
@@ -745,7 +745,8 @@ export default {
     getLogs () {
       if (this.isInstallationStart) {
         let url =
-          '/installation/getInstallationLogs/' + this.installationParam.cluster.clusterName
+          '/installation/getInstallationLogs/' +
+          this.installationParam.cluster.clusterName
         API.get(
           url,
           null,
@@ -762,9 +763,7 @@ export default {
                   this.step = 1
                 } else if (log.indexOf('Start pulling image') > -1) {
                   this.step = 2
-                } else if (
-                  log.indexOf('Start installing redis node') > -1
-                ) {
+                } else if (log.indexOf('Start installing redis node') > -1) {
                   this.step = 3
                 } else if (log.indexOf('Start initializing') > -1) {
                   this.step = 4
@@ -880,7 +879,7 @@ export default {
   color: #909399;
 }
 
-.console-wrapper {
+/* .console-wrapper {
   margin-left: 10px;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
@@ -903,7 +902,7 @@ export default {
   padding: 10px 20px;
   border-bottom: 1px solid #dcdfe6;
   background: #f0f2f5;
-}
+} */
 
 .item-param {
   padding: 5px;

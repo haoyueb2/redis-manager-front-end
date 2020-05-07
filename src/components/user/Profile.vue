@@ -2,7 +2,7 @@
   <div id="profile" class="body-wrapper" v-loading="updateUserLoading">
     <div class="profile-wrapper">
       <el-form :model="user" status-icon ref="user" label-width="100px" :rules="rules">
-        <el-form-item label="Avatar">
+        <!-- <el-form-item label="Avatar">
           <el-upload
             class="avatar-uploader"
             name="avatarFile"
@@ -21,7 +21,7 @@
             />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="User Role" prop="userRole">
           <el-tag size="small" v-if="user.userRole == 0">Super Admin</el-tag>
           <el-tag size="small" v-if="user.userRole == 1">Admin</el-tag>

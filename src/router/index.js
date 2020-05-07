@@ -102,11 +102,11 @@ const router = new Router({
       //   path: '/group-manage',
       //   component: GroupManage
       // },
-    {
-      name: 'user-manage',
-      path: '/user-manage/group/:groupId',
-      component: UserManage
-    },
+    // {
+    //   name: 'user-manage',
+    //   path: '/user-manage/group/:groupId',
+    //   component: UserManage
+    // },
       // {
       //   name: 'edit-history',
       //   path: '/history/group/:groupId',

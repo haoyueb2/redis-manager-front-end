@@ -414,7 +414,6 @@ export default {
       )
     },
     uploadKeypem (item) {
-      // Create new formData object
       const fd = new FormData()
       // append the file you want to upload
       fd.append('fileName', item.file)

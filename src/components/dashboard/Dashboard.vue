@@ -1,6 +1,14 @@
 <template>
   <div v-loading="clusterListLoading">
-    <h1>Clusters:</h1>
+    <label id="title">Clusters:</label>             <el-button
+              size="mini"
+              title="Add Cluster"
+              type="success"
+              @click="toInstallation()"
+              
+              >Add Cluster</el-button
+            >
+            <hr/>
     <!-- <el-row :gutter="20" class="card-panel-group">
       <el-col :xl="6" :lg="6" :md="12" :sm="12">
         <div class="card-panel">
@@ -295,6 +303,12 @@ export default {
         }
       })
     },
+        toInstallation () {
+      this.$router.push({
+        name: 'installation',
+        params: { groupId: this.currentGroupId }
+      })
+    },
     handleBeforeUpload (id) {
       this.clusterId = id
     },
@@ -568,7 +582,10 @@ export default {
 .clearfix:after {
   clear: both;
 } */
-
+#title{
+  font-weight: bolder;
+  color: #409eff;
+}
 .box-card {
   margin-bottom: 20px;
 

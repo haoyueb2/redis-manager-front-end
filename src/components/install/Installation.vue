@@ -120,7 +120,7 @@
                 <el-input v-model.number="installationParam.startPort"></el-input>
               </el-form-item>
               <el-form-item label="End Port" >
-                <el-input ></el-input>
+                <el-input v-model="endPort"></el-input>
               </el-form-item>
 
               <el-form-item
@@ -421,6 +421,7 @@ export default {
       callback();
     };
     return {
+      endPort:'',
       dockerImages: [],
       machineImages: [],
       humpbackImages: [],
@@ -757,6 +758,7 @@ export default {
                   this.step = 6;
                   console.log(6);
                   this.installationLoading = false;
+                  message.success("Install Successfully")
                 }
               }
             });

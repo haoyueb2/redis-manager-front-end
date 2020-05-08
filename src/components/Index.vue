@@ -57,7 +57,7 @@
               active-text-color="#fff" -->
               <el-menu-item index="1" @click="toDashboard()">
                 <!-- <i class="el-icon-discover"></i> -->
-                <span slot="title">Dashboard</span>
+                <span slot="title">Cluster Manage</span>
               </el-menu-item>
               <!-- <el-submenu index="2" v-if="currentUser.userRole < 2">
                 <template slot="title">
@@ -69,9 +69,7 @@
                   <el-menu-item index="2-2" @click="toRuleManage()">Rule Manage</el-menu-item>
                 </el-menu-item-group>
               </el-submenu> -->
-              <el-menu-item index="2" @click="toInstallation()">
-                <span slot="title">Installation</span>
-              </el-menu-item>
+
               <el-menu-item index="3" @click="toMachineManage()">
                 <span slot="title">Machine Manage</span>
               </el-menu-item>
@@ -198,12 +196,7 @@ export default {
         params: { groupId: this.selectGroupId }
       })
     },
-    toInstallation () {
-      this.$router.push({
-        name: 'installation',
-        params: { groupId: this.selectGroupId }
-      })
-    },
+
     // toChannelManage () {
     //   this.$router.push({
     //     name: 'channel-manage',

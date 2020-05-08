@@ -453,14 +453,14 @@ export default {
       ],
       selectedInfoItemList: [
         'used_memory',
-        'used_memory_rss',
-        'mem_fragmentation_ratio',
+        // 'used_memory_rss',
+        // 'mem_fragmentation_ratio',
         'connected_clients',
         'commands_processed',
-        'instantaneous_ops_per_sec',
-        'keyspace_hits_ratio',
-        'keys',
-        'expires'
+        // 'instantaneous_ops_per_sec',
+        // 'keyspace_hits_ratio',
+        'keys'
+        // 'expires'
       ],
       nodeInfoParam: {
         nodeList: [],

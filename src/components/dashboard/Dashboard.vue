@@ -134,7 +134,6 @@
                 >Humpback</el-tag
               >
             </div>
-
           </div>
           <div class="card-bottom">
             <el-button
@@ -156,24 +155,14 @@
 
             <el-button
               size="mini"
-              title="下载配置"
-              type="success"
-              @click="downloadFiles(cluster.clusterId)"
-              >下载配置</el-button
+              title="Manage"
+              type="danger"
+              @click="showDeleteCluster(cluster.clusterId)"
+              >delete</el-button
             >
-
-            <el-upload
-              id="upload"
-              action=""
-              :http-request="uploadFiles"
-              :before-upload="handleBeforeUpload(cluster.clusterId)"
-              :multiple="false"
-            >
-              <el-button size="mini" type="primary">上传配置</el-button>
-            </el-upload>
 
             <el-dropdown
-              id = "dropdown"
+              id="dropdown"
               trigger="click"
               class="more-operation"
               v-if="currentUser.userRole < 2"
@@ -186,18 +175,21 @@
                 circle
               ></el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  icon="el-icon-edit-outline"
-                  class="edit"
-                  @click.native="editCluster(cluster.clusterId)"
-                  >Edit</el-dropdown-item
+                <el-button
+                  size="mini"
+                  title="下载配置"
+                  @click="downloadFiles(cluster.clusterId)"
+                  >export config</el-button
                 >
-                <el-dropdown-item
-                  icon="el-icon-delete"
-                  class="delete"
-                  @click.native="showDeleteCluster(cluster.clusterId)"
-                  >Delete</el-dropdown-item
+                <el-upload
+                  id="upload"
+                  action=""
+                  :http-request="uploadFiles"
+                  :before-upload="handleBeforeUpload(cluster.clusterId)"
+                  :multiple="false"
                 >
+                  <el-button size="mini">import config</el-button>
+                </el-upload>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -579,7 +571,7 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
-  
+
   border-radius: 20px;
 }
 
@@ -592,12 +584,12 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
 }
-#dropdown{
+/* #dropdown {
   margin-top: 10px;
 }
-#upload{
+#upload {
   margin-top: 10px;
-}
+} */
 .more-operation {
   margin-left: 12px;
 }

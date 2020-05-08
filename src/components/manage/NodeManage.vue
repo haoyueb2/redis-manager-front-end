@@ -217,7 +217,7 @@
               <el-tag size="mini" v-if="scope.row.slotRange != null">{{ scope.row.slotNumber }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="Meta" width="130px;">
+          <!-- <el-table-column label="Meta" width="130px;">
             <template slot-scope="scope">
               <el-tag size="mini" class="pointer" @click="getNodeInfo(scope.row)">Info</el-tag>
               <el-tag
@@ -227,57 +227,9 @@
                 v-if="cluster.redisMode != 'sentinel'"
               >Config</el-tag>
             </template>
-          </el-table-column>
-          <el-table-column prop="time" label="Time" sortable></el-table-column>
-          <el-table-column label="Operation" width="230px" v-if="cluster.redisMode != 'sentinel'">
-            <template slot-scope="scope">
-              <el-dropdown size="mini" split-button type="warning" trigger="click">
-                Cluster
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    @click.native="handleMoveSlot(scope.row)"
-                    v-if="cluster.redisMode == 'cluster' && (scope.row.nodeRole == 'MASTER' && scope.row.inCluster)"
-                  >Move Slot</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="handleForget(scope.row)"
-                    v-if="scope.row.nodeRole == 'SLAVE' || scope.row.nodeRole == 'REPLICA' || (scope.row.nodeRole == 'MASTER' && (scope.row.children == null || scope.row.children.length == 0))"
-                  >Forget</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="handleReplicateOf(scope.row)"
-                    v-if="(cluster.redisMode == 'cluster' && scope.row.inCluster && (scope.row.nodeRole == 'SLAVE' || scope.row.nodeRole == 'REPLICA' || (scope.row.nodeRole == 'MASTER' && scope.row.slotRange == null))
-                     || (cluster.redisMode == 'standalone' && !scope.row.inCluster))"
-                  >Replicate Of</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="handleFailOver(scope.row)"
-                    v-if="cluster.redisMode == 'cluster' && (scope.row.nodeRole == 'SLAVE' || scope.row.nodeRole == 'REPLICA') && scope.row.inCluster "
-                  >Fail Over</el-dropdown-item>
-                  <el-dropdown-item>Memory Purge</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-              <!-- v-if="scope.row.slotRange == null" -->
-              <el-dropdown size="mini" split-button type="danger" trigger="click">
-                Node
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    @click.native="handleStart(scope.row)"
-                    :disabled="scope.row.runStatus"
-                  >Start</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="handleStop(scope.row)"
-                    :disabled="(scope.row.inCluster || !scope.row.runStatus) && nodeNumber > 1"
-                  >Stop</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="handleRestart(scope.row)"
-                    :disabled="scope.row.inCluster"
-                  >Restart</el-dropdown-item>
-                  <el-dropdown-item
-                    @click.native="handleDelete(scope.row)"
-                    :disabled="scope.row.runStatus"
-                  >Delete</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-          </el-table-column>
+          </el-table-column> -->
+          
+
         </el-table>
       </div>
     </div>

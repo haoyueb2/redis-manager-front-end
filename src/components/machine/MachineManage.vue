@@ -2,7 +2,6 @@
   <div class="body-wrapper">
 
 
-
     <div class="batch-operation-wrapper">
       <div class="batch-title">Batch Operation</div>
       <el-row>
@@ -12,7 +11,6 @@
         type="success"
         @click="editMachineVisible = true; isUpdate = false, machines={ hostList: [{ value: '' }]}"
       >Import Machine</el-button>
-
       </el-row>
     </div>
     <div>
@@ -22,7 +20,7 @@
         style="width: 100%"
         center
         @selection-change="handleSelectionChange"
-        :default-sort="{ prop: 'machineGroupName', order: 'ascending' }"
+        :default-sort="{prop: 'machineGroupName', order: 'ascending'}"
       >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column
@@ -31,15 +29,8 @@
           width="200"
           sortable
         ></el-table-column>
-        <el-table-column
-          property="host"
-          label="Host"
-          sortable
-        ></el-table-column>
-        <el-table-column
-          property="userName"
-          label="User Name"
-        ></el-table-column>
+        <el-table-column property="host" label="Host" sortable></el-table-column>
+        <el-table-column property="userName" label="User Name"></el-table-column>
         <el-table-column label="Password" align="center">
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="top">
@@ -51,25 +42,15 @@
           </template>
         </el-table-column>
         <el-table-column property="machineInfo" label="Info"></el-table-column>
-        <el-table-column
-          property="time"
-          label="Time"
-          sortable
-        ></el-table-column>
+        <el-table-column property="time" label="Time" sortable></el-table-column>
         <el-table-column label="Operation" width="200px;">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="primary"
-              @click="editMachine(scope.$index, scope.row)"
-              >Edit</el-button
-            >
+            <el-button size="mini" type="primary" @click="editMachine(scope.$index, scope.row)">Edit</el-button>
             <el-button
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
-              >Delete</el-button
-            >
+            >Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -81,13 +62,7 @@
       :close-on-click-modal="false"
       v-loading="saveMachineLoading"
     >
-      <el-form
-        :model="machines"
-        ref="machines"
-        :rules="rules"
-        size="small"
-        label-width="135px"
-      >
+      <el-form :model="machines" ref="machines" :rules="rules" size="small" label-width="135px">
         <el-form-item label="Machine Group" prop="machineGroupName">
           <el-select
             v-model="machines.machineGroupName"
@@ -122,11 +97,7 @@
             :rules="rules.host"
           >
             <el-input v-model="host.value">
-              <el-button
-                slot="append"
-                @click.prevent="removeHost(host)"
-                icon="el-icon-delete"
-              ></el-button>
+              <el-button slot="append" @click.prevent="removeHost(host)" icon="el-icon-delete"></el-button>
             </el-input>
           </el-form-item>
         </div>
@@ -135,64 +106,18 @@
         </el-form-item>
 
         <el-form-item label="Machine Info" prop="machineInfo">
-          <el-input
-            v-model="machines.machineInfo"
-            maxlength="50"
-            show-word-limit
-          ></el-input>
-        </el-form-item>
-
-        <el-form-item label="ca.pem" prop="capem">
-          <el-upload
-            id="upload"
-            action=""
-            :http-request="uploadCapem"
-            :multiple="false"
-          >
-            <el-button size="mini" type="primary">上传ca.pem</el-button>
-          </el-upload>
-        </el-form-item>
-
-        <el-form-item label="cert.pem" prop="certpem">
-          <el-upload
-            id="upload"
-            action=""
-            :http-request="uploadCertpem"
-            :multiple="false"
-          >
-            <el-button size="mini" type="primary">上传cert.pem</el-button>
-          </el-upload>
-        </el-form-item>
-
-        <el-form-item label="key.pem" prop="keypem">
-          <el-upload
-            id="upload"
-            action=""
-            :http-request="uploadKeypem"
-            :multiple="false"
-          >
-            <el-button size="mini" type="primary">上传key.pem</el-button>
-          </el-upload>
+          <el-input v-model="machines.machineInfo" maxlength="50" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="addHost()" v-if="!isUpdate"
-          >New Host</el-button
-        >
+        <el-button size="small" @click="addHost()" v-if="!isUpdate">New Host</el-button>
         <el-button
           size="small"
           type="primary"
           @click="saveMachines('machines')"
           v-if="isUpdate"
-          >Update</el-button
-        >
-        <el-button
-          size="small"
-          type="primary"
-          @click="saveMachines('machines')"
-          v-else
-          >Confirm</el-button
-        >
+        >Update</el-button>
+        <el-button size="small" type="primary" @click="saveMachines('machines')" v-else>Confirm</el-button>
       </div>
     </el-dialog>
 
@@ -202,115 +127,101 @@
         <b>{{ machines.machineGroupName }} {{ machines.host }}</b> ?
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="deleteVisible = false"
-          >Cancel</el-button
-        >
-        <el-button size="small" type="danger" @click="deleteMachine(machines)"
-          >Delete</el-button
-        >
+        <el-button size="small" @click="deleteVisible = false">Cancel</el-button>
+        <el-button size="small" type="danger" @click="deleteMachine(machines)">Delete</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="Delete Machine Batch"
-      :visible.sync="deleteBatchVisible"
-      width="30%"
-    >
+    <el-dialog title="Delete Machine Batch" :visible.sync="deleteBatchVisible" width="30%">
       <span>
         Are you sure to delete ?
         <br />
-        <div v-for="(machine, index) in selectedMachineList" :key="index">
-          {{ machine.machineGroupName }} {{ machine.host }}
-        </div>
+        <div
+          v-for="(machine, index) in selectedMachineList"
+          :key="index"
+        >{{ machine.machineGroupName }} {{ machine.host }}</div>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="deleteBatchVisible = false"
-          >Cancel</el-button
-        >
-        <el-button
-          size="small"
-          type="danger"
-          @click="deleteMachine(selectedMachineList)"
-          >Delete</el-button
-        >
+        <el-button size="small" @click="deleteBatchVisible = false">Cancel</el-button>
+        <el-button size="small" type="danger" @click="deleteMachine(selectedMachineList)">Delete</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import { store } from '@/vuex/store.js'
-import API from '@/api/api.js'
-import { formatTime } from '@/utils/time.js'
-import { isEmpty, validateIp } from '@/utils/validate.js'
-import message from '@/utils/message.js'
+import { store } from "@/vuex/store.js";
+import API from "@/api/api.js";
+import { formatTime } from "@/utils/time.js";
+import { isEmpty, validateIp } from "@/utils/validate.js";
+import message from "@/utils/message.js";
 export default {
-  data () {
+  data() {
     var validateMahineGroupName = (rule, value, callback) => {
       if (isEmpty(value) || isEmpty(value.trim())) {
-        return callback(new Error('Please select or enter machine group name'))
+        return callback(new Error("Please select or enter machine group name"));
       }
-      callback()
-    }
+      callback();
+    };
     var validateUserName = (rule, value, callback) => {
       if (isEmpty(value) || isEmpty(value.trim())) {
-        return callback(new Error('Please enter machine user name'))
+        return callback(new Error("Please enter machine user name"));
       }
-      callback()
-    }
+      callback();
+    };
     var validatePassword = (rule, value, callback) => {
       if (isEmpty(value) || isEmpty(value.trim())) {
-        return callback(new Error('Please enter machine password'))
+        return callback(new Error("Please enter machine password"));
       }
-      callback()
-    }
+      callback();
+    };
     var validateToken = (rule, value, callback) => {
       if (isEmpty(value) || isEmpty(value.trim())) {
-        return callback(new Error('Please  enter machine token'))
+        return callback(new Error("Please  enter machine token"));
       }
-      callback()
-    }
+      callback();
+    };
     var validateHost = (rule, value, callback) => {
       if (isEmpty(value) || isEmpty(value.trim())) {
-        return callback(new Error('Please enter machine ip'))
+        return callback(new Error("Please enter machine ip"));
       } else if (!validateIp(value)) {
-        return callback(new Error('Incorrect ip format'))
+        return callback(new Error("Incorrect ip format"));
       }
-      callback()
-    }
+      callback();
+    };
     var validateHostConnection = (rule, value, callback) => {
-      let userName = this.machines.userName
-      let password = this.machines.password
-      let sshPort = this.machines.sshPort
+      let userName = this.machines.userName;
+      let password = this.machines.password;
+      let sshPort = this.machines.sshPort;
       if (
         isEmpty(userName) ||
         isEmpty(userName.trim()) ||
         isEmpty(password) ||
         isEmpty(password.trim())
       ) {
-        return callback(new Error('Please enter user name and passwor first'))
+        return callback(new Error("Please enter user name and passwor first"));
       }
-      let url = '/machine/validateConnection'
+      let url = "/machine/validateConnection";
       let machine = {
         userName: userName,
         password: password,
         host: value,
         sshPort: sshPort
-      }
+      };
       API.post(
         url,
         machine,
         response => {
-          let result = response.data
+          let result = response.data;
           if (result.code == 0) {
-            callback()
+            callback();
           } else {
-            return callback(new Error(result.message))
+            return callback(new Error(result.message));
           }
         },
         err => {
-          return callback(new Error('Network error'))
+          return callback(new Error("Network error"));
         }
-      )
-    }
+      );
+    };
     return {
       machineList: [],
       machineGroupNameList: [],
@@ -320,7 +231,7 @@ export default {
       deleteBatchVisible: false,
       batchDelete: false,
       machines: {
-        hostList: [{ value: '' }],
+        hostList: [{ value: "" }],
         sshPort: 22
       },
       rules: {
@@ -328,164 +239,99 @@ export default {
           {
             required: true,
             validator: validateMahineGroupName,
-            trigger: 'blur'
+            trigger: "blur"
           }
         ],
         userName: [
           {
             required: true,
             validator: validateUserName,
-            trigger: 'blur'
+            trigger: "blur"
           }
         ],
         password: [
           {
             required: true,
             validator: validatePassword,
-            trigger: 'blur'
+            trigger: "blur"
           }
         ],
         host: [
           {
             required: true,
             validator: validateHost,
-            trigger: 'blur'
+            trigger: "blur"
           },
           {
             required: true,
             validator: validateHostConnection,
-            trigger: 'blur'
+            trigger: "blur"
           }
         ]
       },
-      search: '',
+      search: "",
       selectedMachineList: [],
       saveMachineLoading: false
-    }
+    };
   },
   methods: {
-    uploadCapem (item) {
-      // Create new formData object
-      const fd = new FormData()
-      // append the file you want to upload
-      fd.append('fileName', item.file)
-      let url = '/node-manage/importCa'
-      API.post(
-        url,
-        fd,
-        response => {
-          let result = response.data
-          if (result.code == 0) {
-            this.humpbackImages = result.data
-          } else {
-            message.error(result.message)
-          }
-        },
-        err => {
-          message.error(err)
-        }
-      )
-    },
-    uploadCertpem (item) {
-      // Create new formData object
-      const fd = new FormData()
-      // append the file you want to upload
-      fd.append('fileName', item.file)
-      let url = '/node-manage/importCert'
-      API.post(
-        url,
-        fd,
-        response => {
-          let result = response.data
-          if (result.code == 0) {
-            this.humpbackImages = result.data
-          } else {
-            message.error(result.message)
-          }
-        },
-        err => {
-          message.error(err)
-        }
-      )
-    },
-    uploadKeypem (item) {
-      const fd = new FormData()
-      // append the file you want to upload
-      fd.append('fileName', item.file)
-      let url = '/node-manage/importKey'
-      API.post(
-        url,
-        fd,
-        response => {
-          let result = response.data
-          if (result.code == 0) {
-            this.humpbackImages = result.data
-          } else {
-            message.error(result.message)
-          }
-        },
-        err => {
-          message.error(err)
-        }
-      )
-    },
-    getMachineList (groupId) {
+    getMachineList(groupId) {
       if (isEmpty(groupId)) {
-        return
+        return;
       }
-      let url = '/machine/getMachineList/' + groupId
+      let url = "/machine/getMachineList/" + groupId;
       API.get(
         url,
         null,
         response => {
-          let result = response.data
+          let result = response.data;
           if (result.code == 0) {
-            let machineList = result.data
+            let machineList = result.data;
             machineList.forEach(machine => {
-              machine.time = formatTime(machine.updateTime)
-            })
-            this.machineList = machineList
+              machine.time = formatTime(machine.updateTime);
+            });
+            this.machineList = machineList;
           } else {
-            message.error('Get machine list failed')
+           message.error("Get machine list failed");
           }
         },
         err => {
-          message.error(err)
+          message.error(err);
         }
-      )
+      );
     },
-    getMachineGroupNameList (groupId) {
-      let url = '/machine/getMachineGroupNameList/' + groupId
+    getMachineGroupNameList(groupId) {
+      let url = "/machine/getMachineGroupNameList/" + groupId;
       API.get(
         url,
         null,
         response => {
-          let result = response.data
+          let result = response.data;
           if (result.code == 0) {
-            this.machineGroupNameList = result.data
+            this.machineGroupNameList = result.data;
           } else {
-            message.error('Get machine group name list failed')
+            message.error("Get machine group name list failed");
           }
         },
         err => {
-          message.error(err)
+          message.error(err);
         }
-      )
+      );
     },
-    buildMachineList (machines) {
-      let machineList = []
+    buildMachineList(machines) {
+      let machineList = [];
       if (this.isUpdate) {
-        machineList.push(machines)
-        return machineList
+        machineList.push(machines);
+        return machineList;
       }
-      let machineGroupName = this.machines.machineGroupName
-      let userName = this.machines.userName
-      let password = this.machines.password
-      let token = this.machines.token
-      let hostList = this.machines.hostList
-      let machineInfo = this.machines.machineInfo
-      let sshPort = this.machines.sshPort
-      sshPort = isEmpty(sshPort) ? 22 : sshPort
+      let machineGroupName = this.machines.machineGroupName;
+      let userName = this.machines.userName;
+      let password = this.machines.password;
+      let token = this.machines.token;
+      let hostList = this.machines.hostList;
+      let machineInfo = this.machines.machineInfo;
+      let sshPort = this.machines.sshPort;
+      sshPort = isEmpty(sshPort) ? 22 : sshPort;
       hostList.forEach(host => {
         machineList.push({
           groupId: this.currentGroupId,
@@ -496,141 +342,141 @@ export default {
           host: host.value,
           sshPort: sshPort,
           machineInfo: machineInfo
-        })
-      })
-      return machineList
+        });
+      });
+      return machineList;
     },
-    saveMachines (machines) {
+    saveMachines(machines) {
       this.$refs[machines].validate(valid => {
         if (valid) {
-          let machineList = this.buildMachineList(this.machines)
-          let url = ''
+          let machineList = this.buildMachineList(this.machines);
+          let url = "";
           if (this.isUpdate) {
-            url = '/machine/updateMachine'
+            url = "/machine/updateMachine";
           } else {
-            url = '/machine/addMachineList'
+            url = "/machine/addMachineList";
           }
-          this.saveMachineLoading = true
+          this.saveMachineLoading = true;
           API.post(
             url,
             machineList,
             response => {
-              let result = response.data
+              let result = response.data;
               if (result.code == 0) {
-                this.editMachineVisible = false
-                this.getMachineGroupNameList(this.currentGroupId)
-                this.getMachineList(this.currentGroupId)
+                this.editMachineVisible = false;
+                this.getMachineGroupNameList(this.currentGroupId);
+                this.getMachineList(this.currentGroupId);
               } else {
-                message.error('Save machines failed')
+                message.error("Save machines failed");
               }
-              this.$refs[machines].resetFields()
-              this.saveMachineLoading = false
+              this.$refs[machines].resetFields();
+              this.saveMachineLoading = false;
             },
             err => {
-              this.saveMachineLoading = true
-              message.error(err)
+              this.saveMachineLoading = true;
+              message.error(err);
             }
-          )
+          );
         }
-      })
+      });
     },
-    editMachine (index, row) {
-      this.machines = row
-      this.editMachineVisible = true
-      this.isUpdate = true
+    editMachine(index, row) {
+      this.machines = row;
+      this.editMachineVisible = true;
+      this.isUpdate = true;
     },
-    handleDelete (index, row) {
-      this.machines = row
-      this.deleteVisible = true
-      this.batchDelete = false
+    handleDelete(index, row) {
+      this.machines = row;
+      this.deleteVisible = true;
+      this.batchDelete = false;
     },
-    handleDeleteBatch () {
-      this.batchDelete = true
+    handleDeleteBatch() {
+      this.batchDelete = true;
       if (this.selectedMachineList.length == 0) {
-        message.warning('Please select machine')
+        message.warning("Please select machine");
       } else {
-        this.deleteBatchVisible = true
+        this.deleteBatchVisible = true;
       }
     },
-    deleteMachine () {
-      let url = ''
-      let data
+    deleteMachine() {
+      let url = "";
+      let data;
       if (this.batchDelete) {
-        url = '/machine/deleteMachineBatch'
-        data = this.selectedMachineList
+        url = "/machine/deleteMachineBatch";
+        data = this.selectedMachineList;
         data.forEach(machine => {
-          machine.updateTime = new Date()
-        })
+          machine.updateTime = new Date();
+        });
       } else {
-        url = '/machine/deleteMachine'
-        data = this.machines
-        data.updateTime = new Date()
+        url = "/machine/deleteMachine";
+        data = this.machines;
+        data.updateTime = new Date();
       }
       API.post(
         url,
         data,
         response => {
-          let result = response.data
+          let result = response.data;
           if (result.code == 0) {
-            this.deleteVisible = false
-            this.deleteBatchVisible = false
-            this.getMachineGroupNameList(this.currentGroupId)
-            this.getMachineList(this.currentGroupId)
+            this.deleteVisible = false;
+            this.deleteBatchVisible = false;
+            this.getMachineGroupNameList(this.currentGroupId);
+            this.getMachineList(this.currentGroupId);
             this.machines = {
-              hostList: [{ value: '' }]
-            }
-            this.selectedMachineList = []
+              hostList: [{ value: "" }]
+            };
+            this.selectedMachineList = [];
           } else {
-            message.error('Delete machine failed')
+            message.error("Delete machine failed");
           }
         },
         err => {
-          message.error(err)
+          message.error(err);
         }
-      )
+      );
     },
-    removeHost (item) {
+    removeHost(item) {
       if (this.machines.hostList.length == 1) {
-        return
+        return;
       }
-      var index = this.machines.hostList.indexOf(item)
+      var index = this.machines.hostList.indexOf(item);
       if (index !== -1) {
-        this.machines.hostList.splice(index, 1)
+        this.machines.hostList.splice(index, 1);
       }
     },
-    addHost () {
+    addHost() {
       if (this.machines.hostList.length >= 20) {
-        return
+        return;
       }
       this.machines.hostList.push({
-        value: '',
+        value: "",
         key: Date.now()
-      })
+      });
     },
-    handleSelectionChange (val) {
-      this.selectedMachineList = val
+    handleSelectionChange(val) {
+      this.selectedMachineList = val;
     }
   },
   computed: {
-    currentGroupId () {
-      return store.getters.getCurrentGroup.groupId
+    currentGroupId() {
+      return store.getters.getCurrentGroup.groupId;
     }
   },
   watch: {
-    currentGroupId (groupId) {
-      this.getMachineList(groupId)
+    currentGroupId(groupId) {
+      this.getMachineList(groupId);
       this.$router.push({
-        name: 'machine-manage',
+        name: "machine-manage",
         params: { groupId: groupId }
-      })
+      });
     }
   },
-  mounted () {
-    let groupId = this.currentGroupId
-    this.getMachineList(groupId)
-    this.getMachineGroupNameList(groupId)
+  mounted() {
+    let groupId = this.currentGroupId;
+    this.getMachineList(groupId);
+    this.getMachineGroupNameList(groupId);
   }
-}
+};
 </script>
 <style scoped>
 .body-wrapper {

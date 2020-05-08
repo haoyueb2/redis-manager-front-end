@@ -1,5 +1,6 @@
 <template>
   <div v-loading="clusterListLoading">
+    <h1>Clusters:</h1>
     <!-- <el-row :gutter="20" class="card-panel-group">
       <el-col :xl="6" :lg="6" :md="12" :sm="12">
         <div class="card-panel">
@@ -70,13 +71,13 @@
                 size="mini"
                 v-if="cluster.clusterState == 'HEALTH'"
                 type="success"
-              >{{ cluster.clusterState }}</el-tag>
-              <el-tag size="mini" v-else type="danger">{{ cluster.clusterState }}</el-tag>
+                >{{ cluster.clusterState }}</el-tag
+              >
+              <el-tag size="mini" v-else type="danger">{{
+                cluster.clusterState
+              }}</el-tag>
             </div>
-            <div class="text item">
-              Model:
-              <el-tag size="mini">{{ cluster.redisMode }}</el-tag>
-            </div>
+
             <div class="text item">
               Version:
               <el-tag size="mini">{{ cluster.redisVersion }}</el-tag>
@@ -103,7 +104,11 @@
             </div>
             <div class="text item" v-if="cluster.redisMode == 'cluster'">
               Slots Assigned(ok/assigned):
-              <el-tag size="mini">{{ cluster.clusterSlotsOk }}/{{ cluster.clusterSlotsAssigned }}</el-tag>
+              <el-tag size="mini"
+                >{{ cluster.clusterSlotsOk }}/{{
+                  cluster.clusterSlotsAssigned
+                }}</el-tag
+              >
             </div>
             <div class="text item" v-if="cluster.redisMode == 'standalone'">
               DB Size:
@@ -115,15 +120,21 @@
             </div>
             <div class="text item">
               Environment:
-              <el-tag size="mini" v-if="cluster.installationEnvironment == 0">Docker</el-tag>
-              <el-tag size="mini" v-else-if="cluster.installationEnvironment == 1">Machine</el-tag>
-              <el-tag size="mini" v-else-if="cluster.installationEnvironment == 3">Humpback</el-tag>
+              <el-tag size="mini" v-if="cluster.installationEnvironment == 0"
+                >Docker</el-tag
+              >
+              <el-tag
+                size="mini"
+                v-else-if="cluster.installationEnvironment == 1"
+                >Machine</el-tag
+              >
+              <el-tag
+                size="mini"
+                v-else-if="cluster.installationEnvironment == 3"
+                >Humpback</el-tag
+              >
             </div>
-            <div class="text item">
-              From:
-              <el-tag size="mini" v-if="cluster.installationType == 0">Redis Manager</el-tag>
-              <el-tag size="mini" v-else>Import</el-tag>
-            </div>
+
           </div>
           <div class="card-bottom">
             <el-button
@@ -131,7 +142,8 @@
               title="Monitor"
               type="primary"
               @click="toMonitor(cluster.clusterId)"
-            >Monitor</el-button>
+              >Monitor</el-button
+            >
 
             <el-button
               size="mini"
@@ -139,20 +151,53 @@
               type="success"
               @click="toManage(cluster.clusterId)"
               v-if="currentUser.userRole < 2"
-            >Manage</el-button>
-            <el-dropdown trigger="click" class="more-operation" v-if="currentUser.userRole < 2">
-              <el-button size="mini" title="Edit or delete" type="info" icon="el-icon-more" circle></el-button>
+              >Manage</el-button
+            >
+
+            <el-button
+              size="mini"
+              title="下载配置"
+              type="success"
+              @click="downloadFiles(cluster.clusterId)"
+              >下载配置</el-button
+            >
+
+            <el-upload
+              id="upload"
+              action=""
+              :http-request="uploadFiles"
+              :before-upload="handleBeforeUpload(cluster.clusterId)"
+              :multiple="false"
+            >
+              <el-button size="mini" type="primary">上传配置</el-button>
+            </el-upload>
+
+            <el-dropdown
+              id = "dropdown"
+              trigger="click"
+              class="more-operation"
+              v-if="currentUser.userRole < 2"
+            >
+              <el-button
+                size="mini"
+                title="Edit or delete"
+                type="info"
+                icon="el-icon-more"
+                circle
+              ></el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   icon="el-icon-edit-outline"
                   class="edit"
                   @click.native="editCluster(cluster.clusterId)"
-                >Edit</el-dropdown-item>
+                  >Edit</el-dropdown-item
+                >
                 <el-dropdown-item
                   icon="el-icon-delete"
                   class="delete"
                   @click.native="showDeleteCluster(cluster.clusterId)"
-                >Delete</el-dropdown-item>
+                  >Delete</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -174,34 +219,49 @@
       :close-on-click-modal="false"
       v-if="editClusterVisible"
     >
-      <editCluster @closeDialog="closeEditClusterDialog" :clusterId="editClusterId"></editCluster>
+      <editCluster
+        @closeDialog="closeEditClusterDialog"
+        :clusterId="editClusterId"
+      ></editCluster>
     </el-dialog>
-    <el-dialog title="Delete Cluster" :visible.sync="deleteClusterVisible" width="30%">
+    <el-dialog
+      title="Delete Cluster"
+      :visible.sync="deleteClusterVisible"
+      width="30%"
+    >
       <span>
         Are you sure to delete
         <b>{{ cluster.clusterName }}</b> ?
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">Cancel</el-button>
-        <el-button size="small" type="danger" @click="deleteCluster(cluster.clusterId)">Delete</el-button>
+        <el-button size="small" @click="dialogVisible = false"
+          >Cancel</el-button
+        >
+        <el-button
+          size="small"
+          type="danger"
+          @click="deleteCluster(cluster.clusterId)"
+          >Delete</el-button
+        >
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import query from "@/components/tool/Query";
-import editCluster from "@/components/manage/EditCluster";
-import { store } from "@/vuex/store.js";
-import { isEmpty } from "@/utils/validate.js";
-import API from "@/api/api.js";
-import message from "@/utils/message.js";
+import query from '@/components/tool/Query'
+import editCluster from '@/components/manage/EditCluster'
+import { store } from '@/vuex/store.js'
+import { isEmpty } from '@/utils/validate.js'
+import API from '@/api/api.js'
+import message from '@/utils/message.js'
+import FileSaver from 'file-saver'
 export default {
   components: {
     query,
     editCluster
   },
-  data() {
+  data () {
     return {
       // overview: {
       //   // userNumber: 0,
@@ -211,40 +271,85 @@ export default {
       // },
       clusterList: [],
       cluster: {},
+      clusterId: 0,
       queryVisible: false,
-      editClusterId: "",
+      editClusterId: '',
       editClusterVisible: false,
       deleteClusterVisible: false,
       clusterListLoading: false
-    };
+    }
   },
 
   methods: {
-    toMonitor(clusterId) {
+    toMonitor (clusterId) {
       this.$router.push({
-        name: "redis-monitor",
+        name: 'redis-monitor',
         params: { clusterId: clusterId }
-      });
+      })
     },
-    toManage(clusterId) {
+    toManage (clusterId) {
       this.$router.push({
-        name: "redis-manage",
+        name: 'redis-manage',
         params: {
           clusterId: clusterId
         }
-      });
+      })
     },
-    toAlertManage(clusterId) {
+    toAlertManage (clusterId) {
       this.$router.push({
-        name: "alert-manage",
+        name: 'alert-manage',
         params: {
           clusterId: clusterId
         }
-      });
+      })
     },
-    handleQuery(cluster) {
-      this.cluster = cluster;
-      this.queryVisible = true;
+    handleBeforeUpload (id) {
+      this.clusterId = id
+    },
+    uploadFiles (item) {
+      // Create new formData object
+      const fd = new FormData()
+      // append the file you want to upload
+      fd.append('fileName', item.file)
+      // add other data to the form data object if needed
+      fd.append('clusterid', this.clusterId)
+      // send call the api to upload files using axios or any other means
+      let url = '/node-manage/importConfig'
+      API.post(
+        url,
+        fd,
+        response => {
+          let result = response.data
+          if (result.code == 0) {
+            this.humpbackImages = result.data
+          } else {
+            message.error(result.message)
+          }
+        },
+        err => {
+          message.error(err)
+        }
+      )
+    },
+    downloadFiles (clusterId) {
+      let url = '/node-manage/exportConfig/' + clusterId
+      API.get(
+        url,
+        null,
+        response => {
+          let result = response.data
+          result = JSON.stringify(result)
+          const blob = new Blob([result], { type: '' })
+          FileSaver.saveAs(blob, 'config.json')
+        },
+        err => {
+          message.error(err)
+        }
+      )
+    },
+    handleQuery (cluster) {
+      this.cluster = cluster
+      this.queryVisible = true
     },
     // getOverview(groupId) {
     //   let url = "/group/overview/" + groupId;
@@ -268,107 +373,107 @@ export default {
     //     );
     //   }
     // },
-    getClusterList(groupId) {
-      let url = "/cluster/getClusterList/" + groupId;
-      this.clusterListLoading = true;
+    getClusterList (groupId) {
+      let url = '/cluster/getClusterList/' + groupId
+      this.clusterListLoading = true
       if (!isEmpty(groupId)) {
         API.get(
           url,
           null,
           response => {
-            let result = response.data;
+            let result = response.data
             if (result.code == 0) {
-              let clusterList = result.data;
-              let healthNumber = 0;
-              let badNumber = 0;
+              let clusterList = result.data
+              let healthNumber = 0
+              let badNumber = 0
               clusterList.forEach(cluster => {
-                if (cluster.clusterState == "HEALTH") {
-                  healthNumber++;
+                if (cluster.clusterState == 'HEALTH') {
+                  healthNumber++
                 } else {
-                  badNumber++;
+                  badNumber++
                 }
-              });
+              })
               // this.overview.healthNumber = healthNumber;
               // this.overview.badNumber = badNumber;
-              this.clusterList = clusterList;
+              this.clusterList = clusterList
             } else {
-              message.error("Get cluster list failed");
+              message.error('Get cluster list failed')
             }
-            this.clusterListLoading = false;
+            this.clusterListLoading = false
           },
           err => {
-            this.clusterListLoading = false;
-            message.error(err);
+            this.clusterListLoading = false
+            message.error(err)
           }
-        );
+        )
       }
     },
-    editCluster(clusterId) {
-      this.editClusterId = clusterId;
-      this.editClusterVisible = true;
+    editCluster (clusterId) {
+      this.editClusterId = clusterId
+      this.editClusterVisible = true
     },
-    showDeleteCluster(clusterId) {
+    showDeleteCluster (clusterId) {
       this.clusterList.forEach(cluster => {
         if (cluster.clusterId == clusterId) {
-          this.cluster = cluster;
-          this.deleteClusterVisible = true;
+          this.cluster = cluster
+          this.deleteClusterVisible = true
         }
-      });
+      })
     },
-    deleteCluster(clusterId) {
-      let url = "/cluster/deleteCluster";
+    deleteCluster (clusterId) {
+      let url = '/cluster/deleteCluster'
       let data = {
         clusterId: clusterId,
         groupId: this.currentGroupId
-      };
+      }
       API.post(
         url,
         data,
         response => {
-          let result = response.data;
+          let result = response.data
           if (result.code == 0) {
-            this.cluster = {};
-            this.getClusterList(this.currentGroupId);
-            this.deleteClusterVisible = false;
+            this.cluster = {}
+            this.getClusterList(this.currentGroupId)
+            this.deleteClusterVisible = false
           } else {
-            message.error("Delete cluster failed");
+            message.error('Delete cluster failed')
           }
         },
         err => {
-          message.error(err);
+          message.error(err)
         }
-      );
+      )
     },
-    closeEditClusterDialog(editClusterVisible) {
-      this.editClusterVisible = editClusterVisible;
-      this.getClusterList(this.currentGroupId);
+    closeEditClusterDialog (editClusterVisible) {
+      this.editClusterVisible = editClusterVisible
+      this.getClusterList(this.currentGroupId)
     }
   },
   computed: {
-    currentGroupId() {
-      return store.getters.getCurrentGroup.groupId;
+    currentGroupId () {
+      return store.getters.getCurrentGroup.groupId
     },
-    currentUser() {
-      return store.getters.getUser;
+    currentUser () {
+      return store.getters.getUser
     }
   },
   watch: {
-    currentGroupId(groupId) {
-      this.getClusterList(groupId);
+    currentGroupId (groupId) {
+      this.getClusterList(groupId)
       // this.getOverview(groupId);
       this.$router.push({
-        name: "dashboard",
+        name: 'dashboard',
         params: { groupId: groupId }
-      });
+      })
     }
   },
-  mounted() {
-    let groupId = this.currentGroupId;
-    this.getClusterList(groupId);
+  mounted () {
+    let groupId = this.currentGroupId
+    this.getClusterList(groupId)
     // this.getOverview(groupId);
-    this.userRole = store.getters.getUserRole;
+    this.userRole = store.getters.getUserRole
   }
-};
+}
 </script>
 
 <style scoped>
@@ -474,7 +579,7 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
-  border: 2px solid blue;
+  
   border-radius: 20px;
 }
 
@@ -484,9 +589,15 @@ export default {
 
 .card-bottom {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
 }
-
+#dropdown{
+  margin-top: 10px;
+}
+#upload{
+  margin-top: 10px;
+}
 .more-operation {
   margin-left: 12px;
 }

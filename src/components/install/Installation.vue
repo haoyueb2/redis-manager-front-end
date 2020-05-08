@@ -119,6 +119,9 @@
               <el-form-item label="Start Port" prop="startPort" v-if="installationParam.autoBuild">
                 <el-input v-model.number="installationParam.startPort"></el-input>
               </el-form-item>
+              <el-form-item label="End Port" >
+                <el-input ></el-input>
+              </el-form-item>
 
               <el-form-item
                 label="Master Number"
@@ -837,6 +840,7 @@ export default {
 #installation {
   padding: 20px;
   background-color: #ffffff;
+  height: 90%;
 }
 
 .step-wrapper {

@@ -1,17 +1,16 @@
 <template>
   <div class="body-wrapper">
-    <div class="operation-wrapper">
-      <el-button
-        size="mini"
-        type="success"
-        @click="editMachineVisible = true; isUpdate = false, machines={ hostList: [{ value: '' }]}"
-      >Import Machine</el-button>
-    </div>
+
 
     <div class="batch-operation-wrapper">
       <div class="batch-title">Batch Operation</div>
       <el-row>
         <el-button size="mini" type="danger" @click="handleDeleteBatch()">Delete</el-button>
+        <el-button
+        size="mini"
+        type="success"
+        @click="editMachineVisible = true; isUpdate = false, machines={ hostList: [{ value: '' }]}"
+      >Import Machine</el-button>
       </el-row>
     </div>
     <div>
@@ -489,11 +488,9 @@ export default {
   padding-bottom: 20px;
   border-bottom: 1px solid #dcdfe6;
 }
-
 .batch-operation-wrapper {
   margin: 20px 0;
 }
-
 .batch-title {
   margin-bottom: 10px;
   color: #909399;

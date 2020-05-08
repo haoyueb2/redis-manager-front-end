@@ -1,15 +1,5 @@
 <template>
   <div id="installation" class="body-wrapper">
-    <div class="step-wrapper">
-      <el-steps :active="step" finish-status="success">
-        <el-step title="Environment Check"></el-step>
-        <el-step title="Pull Config" description></el-step>
-        <el-step title="Pull Image" description></el-step>
-        <el-step title="Install" description></el-step>
-        <el-step title="Init" description></el-step>
-        <el-step title="Finish" description></el-step>
-      </el-steps>
-    </div>
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :xl="12" :lg="12" :md="24" :sm="24" v-loading="installationLoading">
         <div class="form-wrapper">
@@ -566,7 +556,7 @@ export default {
         ]
       },
       allMachineList: [],
-      step: -1,
+      // step: -1,
       installationLoading: false,
       humpbackEnabled: false,
       logTimer: null,
@@ -616,7 +606,7 @@ export default {
     },
     install() {
       this.installationLoading = true;
-      this.step = 0;
+      // this.step = 0;
       let url = "/installation/installFlow";
       API.post(
         url,
@@ -760,22 +750,7 @@ export default {
             logList.forEach(log => {
               console.log(log);
               if (!isEmpty(log)) {
-                if (log.indexOf("Start preparing installation") > -1) {
-                  this.step = 1;
-                  console.log(1);
-                } else if (log.indexOf("Start pulling redis.conf") > -1) {
-                  this.step = 2;
-                  console.log(2);
-                } else if (log.indexOf("Start pulling image") > -1) {
-                  this.step = 3;
-                  console.log(3);
-                } else if (log.indexOf("Start installing redis node") > -1) {
-                  this.step = 4;
-                  console.log(4);
-                } else if (log.indexOf("Start initializing") > -1) {
-                  this.step = 5;
-                  console.log(5);
-                } else if (log.indexOf("Start saving to database") > -1) {
+                if (log.indexOf("Start saving to database") > -1) {
                   this.step = 6;
                   console.log(6);
                   this.installationLoading = false;

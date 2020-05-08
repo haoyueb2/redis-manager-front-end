@@ -1,10 +1,11 @@
 
 <template>
-  <el-container id="index" style="background-image: linear-gradient(0deg,#1ac5fa,#2ba3de 51%,#1d71f2);">
-        <img
+  <!-- <el-container id="index" style="background-image: linear-gradient(0deg,#1ac5fa,#2ba3de 51%,#1d71f2);"> -->
+    <el-container id="index" style="background-color: white;">
+        <!-- <img
       src="../assets/background.jpg"
       style="position: absolute; z-index: 0;left: 0; top:0; width: 100%; opacity:0.1;"
-    />
+    /> -->
     <el-header class="header header-wrapper">
       <div class="grid-content logo-wrapper">
         <i class="el-icon-s-fold aside-operation" @click="collapseHandler"></i>

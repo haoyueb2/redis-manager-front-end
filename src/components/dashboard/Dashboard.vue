@@ -1,5 +1,6 @@
 <template>
   <div v-loading="clusterListLoading">
+    <h1>Clusters:</h1>
     <!-- <el-row :gutter="20" class="card-panel-group">
       <el-col :xl="6" :lg="6" :md="12" :sm="12">
         <div class="card-panel">
@@ -76,10 +77,7 @@
                 cluster.clusterState
               }}</el-tag>
             </div>
-            <div class="text item">
-              Model:
-              <el-tag size="mini">{{ cluster.redisMode }}</el-tag>
-            </div>
+
             <div class="text item">
               Version:
               <el-tag size="mini">{{ cluster.redisVersion }}</el-tag>
@@ -136,13 +134,7 @@
                 >Humpback</el-tag
               >
             </div>
-            <div class="text item">
-              From:
-              <el-tag size="mini" v-if="cluster.installationType == 0"
-                >Redis Manager</el-tag
-              >
-              <el-tag size="mini" v-else>Import</el-tag>
-            </div>
+
           </div>
           <div class="card-bottom">
             <el-button
@@ -587,7 +579,7 @@ export default {
 
 .box-card {
   margin-bottom: 20px;
-  border: 2px solid blue;
+  
   border-radius: 20px;
 }
 

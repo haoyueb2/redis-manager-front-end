@@ -1,14 +1,17 @@
 
 <template>
-  <!-- <el-container id="index" style="background-image: linear-gradient(0deg,#1ac5fa,#2ba3de 51%,#1d71f2);"> -->
-    <el-container id="index" style="background-color: white;">
-        <!-- <img
-      src="../assets/background.jpg"
-      style="position: absolute; z-index: 0;left: 0; top:0; width: 100%; opacity:0.1;"
-    /> -->
+  <el-container id="index" >
+    <!-- <el-container id="index" style="background-color: white;"> -->
+
     <el-header class="header header-wrapper">
       <div class="grid-content logo-wrapper">
+ 
+
         <i class="el-icon-s-fold aside-operation" @click="collapseHandler"></i>
+                        <img
+      src="../assets/background.jpg"
+      height="20px" width="37px"
+    />
         <p id="headerTitle">Redis Manager</p> 
       </div>
       <div class="grid-content right-content" id="right-content">
@@ -440,8 +443,7 @@ export default {
 .logo-wrapper {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  width: 180px;
+  width: 200px;
   cursor: pointer;
   padding-left: 22px;
 }
@@ -519,6 +521,9 @@ export default {
   background-repeat:no-repeat;
   background-size: cover;
 } */
+.main {
+  background-color: #f0f2f5;
+}
 
 .is-collapse {
   width: auto !important;

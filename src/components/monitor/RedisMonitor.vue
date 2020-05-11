@@ -142,7 +142,7 @@
     </div>
 
     <div style="margin-top: 20px;">
-      <div class="monitor-condition-wrapper">
+      <!-- <div class="monitor-condition-wrapper">
         <div class="condition-wrapper">
           <el-select
             v-model="nodeType"
@@ -226,7 +226,7 @@
           </div>
         </div>
         <i class="el-icon-refresh-left refresh" @click="refresh()"></i>
-      </div>
+      </div> -->
       <el-row class="echart-wrapper" id="monitor-charts">
         <echartsItem
           v-for="infoItem in selectedInfoItemList"
@@ -533,7 +533,7 @@ export default {
       } else {
         this.timer = setInterval(() => {
           this.refresh()
-        }, 600 * 5)
+        }, 6000 * 5)
       }
     },
     refresh () {

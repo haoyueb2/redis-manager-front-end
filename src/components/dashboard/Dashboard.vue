@@ -93,10 +93,6 @@
               Sentinel OK:
               <el-tag size="mini">{{ cluster.sentinelOk }}</el-tag>
             </div>
-            <div class="text item" v-if="cluster.redisMode != 'sentinel'">
-              Total Momery:
-              <el-tag size="mini">{{ cluster.totalUsedMemory }}MB</el-tag>
-            </div>
             <div class="text item" v-else>
               Sentinel Masters:
               <el-tag size="mini">{{ cluster.sentinelMasters }}</el-tag>

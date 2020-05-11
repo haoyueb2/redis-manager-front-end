@@ -64,7 +64,7 @@
       >
         <el-card class="box-card" shadow="hover">
           <div slot="header" class="box-card-title">
-            <span>{{ cluster.clusterName }}</span>
+            <span class="cluster-name">{{ cluster.clusterName }}</span>
           </div>
           <div>
             <div class="text item">
@@ -92,10 +92,6 @@
             <div class="text item" v-else>
               Sentinel OK:
               <el-tag size="mini">{{ cluster.sentinelOk }}</el-tag>
-            </div>
-            <div class="text item" v-if="cluster.redisMode != 'sentinel'">
-              Total Momery:
-              <el-tag size="mini">{{ cluster.totalUsedMemory }}MB</el-tag>
             </div>
             <div class="text item" v-else>
               Sentinel Masters:
@@ -540,6 +536,7 @@ export default {
   clear: both;
 } */
 #title {
+  font-family: fantasy;
   font-weight: bolder;
   color: #409eff;
 }
@@ -585,5 +582,9 @@ export default {
 }
 .el-col {
   border-radius: 4px;
+}
+.cluster-name{
+  font-family: fantasy;
+  font-weight: bold;
 }
 </style>

@@ -2,12 +2,12 @@
   <div id="cluster-manage" class="body-wrapper">
     <div class="manage-header-wrapper" v-loading="clusterLoading">
       <div class="title-wrapper">
-        <span>{{ cluster.clusterName }}</span>
+        <span id="cluster-name">{{ cluster.clusterName }}</span>
         <i class="el-icon-sunny health" title="Status" v-if="cluster.clusterState == 'HEALTH'"></i>
         <i class="el-icon-heavy-rain bad" title="Status" v-else></i>
       </div>
 
-      <div class="base-info-operation-wrapper">
+      <!-- <div class="base-info-operation-wrapper">
         <span class="base-info-item">
           Node:
           <el-tag size="mini">{{ cluster.clusterKnownNodes }}</el-tag>
@@ -43,7 +43,7 @@
           <el-tag size="mini" v-if="cluster.installationType == 0">Redis Manager</el-tag>
           <el-tag size="mini" v-else>Import</el-tag>
         </span>
-      </div>
+      </div> -->
     </div>
     <div v-if="sentinelMasterList.length > 0" style="margin-buttom: 20px">
       <el-table :data="sentinelMasterList">
@@ -103,7 +103,7 @@
     </div>
     <div class="nodes-wrapper" v-loading="nodeListLoading">
       <div class="batch-operation-wrapper">
-        <div class="batch-title">Cluster Operation</div>
+        
         <div style="display: flex; justify-content: space-between;">
           <div v-if="cluster.redisMode != 'sentinel'">
             <!-- <el-link :underline="false" icon="el-icon-finished">Memory Purge</el-link>
@@ -118,12 +118,14 @@
             <el-divider direction="vertical"></el-divider>
             <el-link :underline="false" icon="el-icon-circle-close">Delete</el-link>
             <el-divider direction="vertical"></el-divider>-->
-            <el-link
-              :underline="false"
-              icon="el-icon-edit"
+
+                        <el-button
+              size="mini"
+              title="Edit Config"
+              type="primary"
               @click="editConfigVisible = true"
-            >Edit Config</el-link>
-            <span
+            >Edit Config</el-button>
+            <!-- <span
               v-if="cluster.redisMode == 'cluster' && !cluster.initialized && cluster.clusterSlotsAssigned == 0"
             >
               <el-divider direction="vertical"></el-divider>
@@ -132,10 +134,10 @@
                 icon="el-icon-coordinate"
                 @click="initSlotsVisible = true"
               >Init Slot</el-link>
-            </span>
+            </span> -->
           </div>
           <div></div>
-          <div style="display: flex;align-items: center;">
+          <!-- <div style="display: flex;align-items: center;">
             <el-link
               :underline="false"
               icon="el-icon-plus"
@@ -152,7 +154,7 @@
             >Monitor Master</el-link>
             <el-divider direction="vertical"></el-divider>
             <i class="el-icon-refresh-left refresh" @click="refresh()"></i>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="table-wrapper">
@@ -325,20 +327,20 @@
     </el-dialog>
 
     <el-dialog
-      title="Edit Config"
+      title=""
       :visible.sync="editConfigVisible"
       :close-on-click-modal="false"
-      width="30%"
+      width="32%"
     >
-      <el-form :model="redisConfig" ref="redisConfig" size="small" label-position="top">
-        <el-form-item label="Config Key" prop="configKey" :rules="rules.configKey">
+      <el-form :inline="true" :model="redisConfig" ref="redisConfig" size="small" label-position="right" >
+        <el-form-item label="Key: " prop="configKey" :rules="rules.configKey">
           <el-select
             v-model="redisConfig.configKey"
             filterable
             allow-create
             default-first-option
             placeholder="Please select config key"
-            @change="getConfigCurrentValue(redisConfig)"
+            @change="getConfigCurrentValue(redisConfig)" id="select-config"
           >
             <el-option
               v-for="configKey in configKeyList"
@@ -351,11 +353,11 @@
         <!-- <el-form-item label="Current Value" prop="currentValue">
           <span style="color: #409EFF">5546</span>
         </el-form-item>-->
-        <el-form-item label="Config Value" prop="configValue">
+        <el-form-item label="Value:" prop="configValue">
           <el-input v-model="redisConfig.configValue"></el-input>
         </el-form-item>
-        <p v-for="nodeConfig in nodeConfigList" :key="nodeConfig.redisNode">
-          <span style="color: #606266;">{{ nodeConfig.redisNode }}</span>
+        <p id=“possible-value” v-for="nodeConfig in nodeConfigList" :key="nodeConfig.redisNode">
+          <span style="color: green;">{{ nodeConfig.redisNode }}</span>
           <span>
             <b>{{ nodeConfig.configValue }}</b>
           </span>
@@ -969,6 +971,7 @@ export default {
               let result = response.data;
               if (result.code == 0) {
                 this.editConfigVisible = false;
+                message.success("update config succeeded")
               } else {
                 message.error("update config failed");
               }
@@ -1495,17 +1498,19 @@ export default {
   min-width: 1000px;
 }
 
-.manage-header-wrapper {
+/* .manage-header-wrapper {
   padding-bottom: 20px;
   border-bottom: 1px solid #dcdfe6;
-}
+} */
 
-.base-info-operation-wrapper {
+/* .base-info-operation-wrapper {
   margin-top: 20px;
   display: flex;
   align-items: center;
+} */
+#select-config{
+  overflow:hidden;
 }
-
 .bad {
   color: #f4516c;
 }
@@ -1558,5 +1563,13 @@ export default {
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
+}
+#cluster-name{
+  font-family: fantasy;
+  font-weight: bold;
+  font-size: 20px;
+}
+#possible-value{
+  margin-left: 20px;
 }
 </style>

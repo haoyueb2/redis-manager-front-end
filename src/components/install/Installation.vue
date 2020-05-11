@@ -1,7 +1,8 @@
 <template>
   <div id="installation" class="body-wrapper">
     <el-row type="flex" class="row-bg" justify="center">
-      <el-col :xl="12" :lg="12" :md="24" :sm="24" v-loading="installationLoading">
+      <el-col  v-loading="installationLoading">
+        <h1>Cluster Installation</h1>
         <div class="form-wrapper">
           <div class="form">
             <el-form
@@ -10,11 +11,9 @@
               ref="installationParam"
               label-width="150px"
               class="demo-ruleForm"
-              size="small"
+              size="medium"
             >
-              <el-form-item label="Group Name" prop="groupName">
-                <el-tag size="small">{{ currentGroup.groupName }}</el-tag>
-              </el-form-item>
+
               <el-form-item label="Cluster Name" prop="clusterName">
                 <el-input v-model="installationParam.clusterName" maxlength="50" show-word-limit></el-input>
               </el-form-item>
